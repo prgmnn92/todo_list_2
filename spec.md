@@ -1,0 +1,24 @@
+# Requirements
+
+- Create, Read, Update, Delete Tasks
+- Tasks states
+    - In progress
+    - Backlog
+    - Needs to be done
+    - Done
+    - Not started
+- Tasks due date 
+- Recurring task? 
+    - Daily
+    - Weekly
+    - Monthly
+    - For Monthly and weekly - need to select a specific weekday or day of the month
+- Task Image
+- Task description
+- Task related to project, project is optional
+- Task boards related to users, you can invite a user to a task board and collaborate with him in real time  
+- User authentication with prisma and mongodb
+- Task state can be changed with drag and drop 
+- Task date of creation and date of finished
+- Shortcut for new task creation
+- User profile view user settings
