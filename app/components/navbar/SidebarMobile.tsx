@@ -1,20 +1,27 @@
 "use client";
 import React, { Fragment, useState } from "react";
+import Image from "next/image";
 
 import { Dialog, Transition } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 
 import Logo from "./Logo";
 
+import { SafeUser } from "@/app/types";
+
 import { INavigationItem } from "./Navbar";
-import Image from "next/image";
 import NavItem from "./NavItem";
+import Avatar from "../Avatar";
 
 interface SidebarMobileProps {
   navItems: INavigationItem[];
+  currentUser?: SafeUser | null;
 }
 
-const SidebarMobile: React.FC<SidebarMobileProps> = ({ navItems }) => {
+const SidebarMobile: React.FC<SidebarMobileProps> = ({
+  navItems,
+  currentUser,
+}) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -22,7 +29,7 @@ const SidebarMobile: React.FC<SidebarMobileProps> = ({ navItems }) => {
       <Transition.Root show={sidebarOpen} as={Fragment}>
         <Dialog
           as="div"
-          className="relative z-50 lg:hidden"
+          className="relative z-40 lg:hidden"
           onClose={setSidebarOpen}
         >
           <Transition.Child
@@ -114,13 +121,7 @@ const SidebarMobile: React.FC<SidebarMobileProps> = ({ navItems }) => {
         </div>
         <a href="#">
           <span className="sr-only">Your profile</span>
-          <Image
-            className="w-8 h-8 rounded-full bg-gray-50"
-            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-            alt=""
-            width={400}
-            height={400}
-          />
+          <Avatar src={currentUser?.image} />
         </a>
       </div>
     </>

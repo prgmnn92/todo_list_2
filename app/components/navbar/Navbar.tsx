@@ -12,6 +12,7 @@ import {
 } from "@heroicons/react/24/outline";
 import SidebarMobile from "./SidebarMobile";
 import SidebarDesktop from "./SidebarDesktop";
+import { SafeUser } from "@/app/types";
 
 export interface INavigationItem {
   name: string;
@@ -31,9 +32,10 @@ const navigation: INavigationItem[] = [
 
 interface NavbarProps {
   children: React.ReactNode;
+  currentUser?: SafeUser | null;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ children }) => {
+const Navbar: React.FC<NavbarProps> = ({ children, currentUser }) => {
   return (
     <>
       {/*
@@ -44,8 +46,8 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
         ```
       */}
       <div>
-        <SidebarMobile navItems={navigation} />
-        <SidebarDesktop navItems={navigation} />
+        <SidebarMobile currentUser={currentUser} navItems={navigation} />
+        <SidebarDesktop currentUser={currentUser} navItems={navigation} />
 
         {/* Static sidebar for desktop */}
 
