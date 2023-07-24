@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 
 interface NavItemProps {
@@ -15,7 +16,7 @@ const NavItem: React.FC<NavItemProps> = ({
 }) => {
   return (
     <li key={name}>
-      <a
+      <Link
         href={href}
         className={`${
           isCurrent
@@ -34,7 +35,7 @@ const NavItem: React.FC<NavItemProps> = ({
           aria-hidden="true"
         />
         {name}
-      </a>
+      </Link>
     </li>
   );
 };

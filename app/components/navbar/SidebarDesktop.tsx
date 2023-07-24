@@ -1,6 +1,5 @@
 "use client";
 import React, { useCallback } from "react";
-import Image from "next/image";
 
 import { SafeUser } from "@/app/types";
 
@@ -9,6 +8,7 @@ import { INavigationItem } from "./Navbar";
 import NavItem from "./NavItem";
 import useLoginModal from "@/app/hooks/useLoginModal";
 import Avatar from "../Avatar";
+import useUserModal from "@/app/hooks/useUserModal";
 
 interface SidebarDesktopProps {
   navItems: INavigationItem[];
@@ -20,12 +20,15 @@ const SidebarDesktop: React.FC<SidebarDesktopProps> = ({
   currentUser,
 }) => {
   const loginModal = useLoginModal();
+  const userModal = useUserModal();
 
   const toggle = useCallback(() => {
     if (!currentUser) {
       loginModal.onOpen();
+    } else {
+      userModal.onOpen();
     }
-  }, [currentUser, loginModal]);
+  }, [currentUser, loginModal, userModal]);
 
   return (
     <div className="hidden lg:fixed lg:inset-y-0 lg:z-40 lg:flex lg:w-72 lg:flex-col">
@@ -38,15 +41,16 @@ const SidebarDesktop: React.FC<SidebarDesktopProps> = ({
           <ul role="list" className="flex flex-col flex-1 gap-y-7">
             <li>
               <ul role="list" className="-mx-2 space-y-1">
-                {navItems.map((item) => (
-                  <NavItem
-                    key={item.name}
-                    name={item.name}
-                    href={item.href}
-                    isCurrent={item.current}
-                    icon={item.icon}
-                  />
-                ))}
+                {currentUser &&
+                  navItems.map((item) => (
+                    <NavItem
+                      key={item.name}
+                      name={item.name}
+                      href={item.href}
+                      isCurrent={item.current}
+                      icon={item.icon}
+                    />
+                  ))}
               </ul>
             </li>
             <li className="mt-auto -mx-6">

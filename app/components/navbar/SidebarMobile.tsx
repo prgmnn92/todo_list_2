@@ -1,6 +1,5 @@
 "use client";
-import React, { Fragment, useState } from "react";
-import Image from "next/image";
+import React, { Fragment, useCallback, useState } from "react";
 
 import { Dialog, Transition } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
@@ -12,6 +11,8 @@ import { SafeUser } from "@/app/types";
 import { INavigationItem } from "./Navbar";
 import NavItem from "./NavItem";
 import Avatar from "../Avatar";
+import useUserModal from "@/app/hooks/useUserModal";
+import useLoginModal from "@/app/hooks/useLoginModal";
 
 interface SidebarMobileProps {
   navItems: INavigationItem[];
@@ -23,6 +24,17 @@ const SidebarMobile: React.FC<SidebarMobileProps> = ({
   currentUser,
 }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const loginModal = useLoginModal();
+  const userModal = useUserModal();
+
+  const toggle = useCallback(() => {
+    if (!currentUser) {
+      loginModal.onOpen();
+    } else {
+      userModal.onOpen();
+    }
+  }, [currentUser, loginModal, userModal]);
 
   return (
     <>
@@ -87,15 +99,16 @@ const SidebarMobile: React.FC<SidebarMobileProps> = ({
                     <ul role="list" className="flex flex-col flex-1 gap-y-7">
                       <li>
                         <ul role="list" className="-mx-2 space-y-1">
-                          {navItems.map((item) => (
-                            <NavItem
-                              key={item.name}
-                              name={item.name}
-                              href={item.href}
-                              isCurrent={item.current}
-                              icon={item.icon}
-                            />
-                          ))}
+                          {currentUser &&
+                            navItems.map((item) => (
+                              <NavItem
+                                key={item.name}
+                                name={item.name}
+                                href={item.href}
+                                isCurrent={item.current}
+                                icon={item.icon}
+                              />
+                            ))}
                         </ul>
                       </li>
                     </ul>
@@ -119,8 +132,8 @@ const SidebarMobile: React.FC<SidebarMobileProps> = ({
         <div className="flex-1 text-sm font-semibold leading-6 text-gray-900">
           Dashboard
         </div>
-        <a href="#">
-          <span className="sr-only">Your profile</span>
+        <a href="#" onClick={toggle}>
+          <span className="sr-only">{currentUser?.name || "Login"}</span>
           <Avatar src={currentUser?.image} />
         </a>
       </div>

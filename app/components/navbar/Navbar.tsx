@@ -48,12 +48,6 @@ const Navbar: React.FC<NavbarProps> = ({ children, currentUser }) => {
       <div>
         <SidebarMobile currentUser={currentUser} navItems={navigation} />
         <SidebarDesktop currentUser={currentUser} navItems={navigation} />
-
-        {/* Static sidebar for desktop */}
-
-        {/* <main className="py-10 lg:pl-72">
-          <div className="px-4 sm:px-6 lg:px-8"></div>
-        </main> */}
         <div>{children}</div>
       </div>
     </>
