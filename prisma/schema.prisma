@@ -35,11 +35,12 @@ model Project {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   dueAt       DateTime?
+  status      String    @default("Not started")
+  creatorId   String    @db.ObjectId
 
   Task Task[]
 
-  creator   User   @relation(fields: [creatorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  creatorId String @db.ObjectId
+  creator User @relation(fields: [creatorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model Task {

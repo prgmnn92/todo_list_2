@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { XMarkIcon } from "@heroicons/react/24/outline";
+import { IoMdClose } from "react-icons/io";
+
 import Button from "../Button";
 
 interface ModalProps {
@@ -97,7 +98,7 @@ const Modal: React.FC<ModalProps> = ({
                   className="absolute p-1 transition border-0 hover:opacity-70 left-9"
                   onClick={handleClose}
                 >
-                  <XMarkIcon />
+                  <IoMdClose size={18} />
                 </button>
                 <div className="text-lg font-semibold">{title}</div>
               </div>

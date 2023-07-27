@@ -4,48 +4,51 @@ import React from "react";
 
 import axios from "axios";
 
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 
-import useUserModal from "@/app/hooks/useUserModal";
 import Modal from "./Modal";
 import Heading from "../Heading";
 import Input from "../inputs/Input";
 import { toast } from "react-hot-toast";
-import Button from "../Button";
-import { signOut } from "next-auth/react";
-import { SafeUser } from "@/app/types";
+import useProjectModal from "@/app/hooks/useProjectModal";
+import ImageUpload from "../inputs/ImageUpload";
 
-interface UserModalProps {
-  currentUser?: SafeUser | null;
-}
-
-const UserModal: React.FC<UserModalProps> = ({ currentUser }) => {
-  const userModal = useUserModal();
+const ProjectModal = () => {
+  const projectModal = useProjectModal();
 
   const [isLoading, setIsLoading] = useState(false);
 
   const {
     register,
     handleSubmit,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<FieldValues>({
     defaultValues: {
-      name: currentUser?.name || "",
-      email: currentUser?.email || "",
+      name: "",
+      image: "",
     },
   });
+
+  const image = watch("image");
+
+  const setCustomValue = (id: string, value: any) => {
+    setValue(id, value, {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: true,
+    });
+  };
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true);
 
     axios
-      .put("/api/user/update", {
-        id: currentUser?.id,
-        ...data,
-      })
+      .post("/api/project", data)
       .then(() => {
-        userModal.onClose();
+        projectModal.onClose();
       })
       .catch((error) => {
         toast.error("Something went wrong");
@@ -55,14 +58,9 @@ const UserModal: React.FC<UserModalProps> = ({ currentUser }) => {
       });
   };
 
-  const toggle = useCallback(() => {
-    signOut();
-    userModal.onClose();
-  }, [userModal]);
-
   const bodyContent = (
     <div className="flex flex-col gap-4">
-      <Heading title="User Settings" subtitle="Update your user informations" />
+      <Heading title="Create a project" subtitle="Start a new project" />
       <Input
         id="name"
         label="Name"
@@ -71,13 +69,9 @@ const UserModal: React.FC<UserModalProps> = ({ currentUser }) => {
         errors={errors}
         required
       />
-      <Input
-        id="email"
-        label="Email"
-        disabled={isLoading}
-        register={register}
-        errors={errors}
-        required
+      <ImageUpload
+        onChange={(value) => setCustomValue("image", value)}
+        value={image}
       />
     </div>
   );
@@ -85,17 +79,16 @@ const UserModal: React.FC<UserModalProps> = ({ currentUser }) => {
   const footerContent = (
     <div className="flex flex-col gap-4 mt-3">
       <hr />
-      <Button label="Sign Out" onClick={toggle} />
     </div>
   );
 
   return (
     <Modal
       disabled={isLoading}
-      isOpen={userModal.isOpen}
-      title="User Settings"
-      actionLabel="Save"
-      onClose={userModal.onClose}
+      isOpen={projectModal.isOpen}
+      title="Create Project"
+      actionLabel="Create"
+      onClose={projectModal.onClose}
       onSubmit={handleSubmit(onSubmit)}
       body={bodyContent}
       footer={footerContent}
@@ -103,4 +96,4 @@ const UserModal: React.FC<UserModalProps> = ({ currentUser }) => {
   );
 };
 
-export default UserModal;
+export default ProjectModal;

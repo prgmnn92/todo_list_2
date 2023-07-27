@@ -5,6 +5,7 @@ const nextConfig = {
       "images.unsplash.com",
       "tailwindui.com",
       "lh3.googleusercontent.com",
+      "res.cloudinary.com",
     ],
   },
 };
