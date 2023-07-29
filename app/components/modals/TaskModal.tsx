@@ -36,6 +36,7 @@ const TaskModal: React.FC<TaskModalProps> = ({ projectId }) => {
     defaultValues: {
       name: "",
       image: "",
+      description: "",
     },
   });
 
@@ -72,6 +73,14 @@ const TaskModal: React.FC<TaskModalProps> = ({ projectId }) => {
       <Input
         id="name"
         label="Name"
+        disabled={isLoading}
+        register={register}
+        errors={errors}
+        required
+      />
+      <Input
+        id="description"
+        label="Description"
         disabled={isLoading}
         register={register}
         errors={errors}

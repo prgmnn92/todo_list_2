@@ -1,12 +1,14 @@
 import prisma from "@/app/libs/prismadb";
 import getCurrentUser from "./getCurrentUser";
+import { redirect } from "next/navigation";
 
 export default async function getProjects() {
   try {
     const currentUser = await getCurrentUser();
 
     if (!currentUser) {
-      throw Error("You need to be logged in to fetch projects");
+      redirect("/");
+      // throw Error("You need to be logged in to fetch projects");
     }
 
     const projects = await prisma.project.findMany({
@@ -18,12 +20,28 @@ export default async function getProjects() {
       },
     });
 
-    const safeProjects = projects.map((project) => ({
-      ...project,
-      createdAt: project.createdAt.toISOString(),
-      updatedAt: project.updatedAt.toISOString(),
-      dueAt: project.dueAt?.toISOString() || null,
-    }));
+    const user = await prisma.user.findUnique({
+      where: {
+        id: currentUser?.id,
+      },
+    });
+
+    const safeProjects = projects.map((project) => {
+      return {
+        project: {
+          ...project,
+          createdAt: project.createdAt.toISOString(),
+          updatedAt: project.updatedAt.toISOString(),
+          dueAt: project.dueAt?.toISOString() || null,
+        },
+        user: {
+          ...user,
+          createdAt: user?.createdAt.toISOString(),
+          updatedAt: user?.updatedAt.toISOString(),
+          emailVerified: user?.emailVerified?.toISOString() || null,
+        },
+      };
+    });
 
     return safeProjects;
   } catch (error: any) {
