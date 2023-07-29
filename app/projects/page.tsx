@@ -1,13 +1,14 @@
 import getProjects from "../actions/getProjects";
+import Container from "../components/Container";
 import Projects from "../projects";
 
 export default async function Page() {
   const projects = await getProjects();
   return (
     <main className="py-10 lg:pl-72">
-      <div className="px-4 sm:px-6 lg:px-8">
+      <Container>
         <Projects projects={projects} />
-      </div>
+      </Container>
     </main>
   );
 }

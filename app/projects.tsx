@@ -5,6 +5,7 @@ import { AiOutlinePlus } from "react-icons/ai";
 import { SafeProject } from "./types";
 import useProjectModal from "./hooks/useProjectModal";
 import { formatDistance } from "date-fns";
+import { useRouter } from "next/navigation";
 
 const statuses = {
   Completed: "text-green-400 bg-green-400/10",
@@ -22,6 +23,8 @@ const Projects: React.FC<ProjectsProps> = ({ projects }) => {
   };
 
   const projectModal = useProjectModal();
+  const router = useRouter();
+
   return (
     <div className="py-10">
       <div className="flex items-center justify-between">
@@ -85,7 +88,11 @@ const Projects: React.FC<ProjectsProps> = ({ projects }) => {
             );
 
             return (
-              <tr key={project.name}>
+              <tr
+                key={project.name}
+                onClick={() => router.push(`/projects/${project.id}`)}
+                className="cursor-pointer"
+              >
                 <td className="py-4 pl-4 pr-8 sm:pl-6 lg:pl-8">
                   <div className="flex items-center gap-x-4">
                     <Image

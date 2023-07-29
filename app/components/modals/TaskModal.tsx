@@ -11,14 +11,19 @@ import Modal from "./Modal";
 import Heading from "../Heading";
 import Input from "../inputs/Input";
 import { toast } from "react-hot-toast";
-import useProjectModal from "@/app/hooks/useProjectModal";
 import ImageUpload from "../inputs/ImageUpload";
+import useTaskModal from "@/app/hooks/useTaskModal";
 import { useRouter } from "next/navigation";
 
-const ProjectModal = () => {
-  const projectModal = useProjectModal();
+interface TaskModalProps {
+  projectId: string;
+}
+
+const TaskModal: React.FC<TaskModalProps> = ({ projectId }) => {
+  const taskModal = useTaskModal();
 
   const [isLoading, setIsLoading] = useState(false);
+
   const router = useRouter();
 
   const {
@@ -48,9 +53,9 @@ const ProjectModal = () => {
     setIsLoading(true);
 
     axios
-      .post("/api/project", data)
+      .post("/api/task", { projectId, ...data })
       .then(() => {
-        projectModal.onClose();
+        taskModal.onClose();
       })
       .catch((error) => {
         toast.error("Something went wrong");
@@ -63,7 +68,7 @@ const ProjectModal = () => {
 
   const bodyContent = (
     <div className="flex flex-col gap-4">
-      <Heading title="Create a project" subtitle="Start a new project" />
+      <Heading title="Create a task" subtitle="Add a new task to you project" />
       <Input
         id="name"
         label="Name"
@@ -88,10 +93,10 @@ const ProjectModal = () => {
   return (
     <Modal
       disabled={isLoading}
-      isOpen={projectModal.isOpen}
+      isOpen={taskModal.isOpen}
       title="Create Project"
       actionLabel="Create"
-      onClose={projectModal.onClose}
+      onClose={taskModal.onClose}
       onSubmit={handleSubmit(onSubmit)}
       body={bodyContent}
       footer={footerContent}
@@ -99,4 +104,4 @@ const ProjectModal = () => {
   );
 };
 
-export default ProjectModal;
+export default TaskModal;

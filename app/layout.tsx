@@ -27,8 +27,8 @@ export default async function RootLayout({
       <body className={`${inter.className} h-full`}>
         <LoginModal />
         <RegisterModal />
-        <UserModal currentUser={currentUser} />
         <ProjectModal />
+        <UserModal currentUser={currentUser} />
         <Navbar currentUser={currentUser}>{children}</Navbar>
       </body>
     </html>

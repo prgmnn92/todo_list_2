@@ -11,15 +11,15 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json();
-  const { image, name } = body;
+  const { image, name, projectId } = body;
 
-  const project = await prisma.project.create({
+  const task = await prisma.task.create({
     data: {
-      image,
+      image: image === "" ? "/images/placeholder-image.png" : image,
       name,
-      creatorId: currentUser.id,
+      projectId,
     },
   });
 
-  return NextResponse.json(project);
+  return NextResponse.json(task);
 }
