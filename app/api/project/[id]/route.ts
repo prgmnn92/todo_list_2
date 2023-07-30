@@ -25,3 +25,19 @@ export async function DELETE(
 
   return NextResponse.json(task);
 }
+
+export async function PUT(request: Request, { params }: { params: IParams }) {
+  const body = await request.json();
+  const { status } = body;
+
+  const project = await prisma.project.update({
+    where: {
+      id: params.id,
+    },
+    data: {
+      status,
+    },
+  });
+
+  return NextResponse.json(project);
+}

@@ -10,10 +10,9 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 
 const statuses = {
-  Completed: "text-green-400 bg-green-400/10 ring-green-500/10",
+  Complete: "text-green-400 bg-green-400/10 ring-green-500/10",
   "In progress": "text-orange-600 bg-orange-50 ring-orange-500/10",
   "Not started": "text-zinc-600 bg-zinc-50 ring-zinc-500/10",
-  Error: "text-rose-400 bg-rose-400/10 ring-rose-500/10",
 };
 
 interface ProjectListingProps {
@@ -108,6 +107,7 @@ const ProjectListing: React.FC<ProjectListingProps> = ({ project, user }) => {
               <Menu.Item>
                 {({ active }) => (
                   <a
+                    href="#"
                     onClick={deleteTask}
                     className={`
                   ${active ? "bg-gray-50" : ""}

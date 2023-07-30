@@ -8,18 +8,14 @@ import { useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 
 import Modal from "./Modal";
-import Heading from "../Heading";
 import Input from "../inputs/Input";
 import { toast } from "react-hot-toast";
-import useTaskModal from "@/app/hooks/useTaskModal";
 import { useRouter } from "next/navigation";
+import { SafeTask } from "@/app/types";
+import useTaskEditModal from "@/app/hooks/useTaskEditModal";
 
-interface TaskModalProps {
-  projectId: string;
-}
-
-const TaskModal: React.FC<TaskModalProps> = ({ projectId }) => {
-  const taskModal = useTaskModal();
+const TaskEditModal = () => {
+  const { task, isOpen, onClose } = useTaskEditModal();
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -31,8 +27,8 @@ const TaskModal: React.FC<TaskModalProps> = ({ projectId }) => {
     formState: { errors },
   } = useForm<FieldValues>({
     defaultValues: {
-      name: "",
-      description: "",
+      name: task?.name || "",
+      description: task?.description || "",
     },
   });
 
@@ -40,9 +36,9 @@ const TaskModal: React.FC<TaskModalProps> = ({ projectId }) => {
     setIsLoading(true);
 
     axios
-      .post("/api/task", { projectId, ...data })
+      .put(`/api/task/${task?.id}`, data)
       .then(() => {
-        taskModal.onClose();
+        onClose();
       })
       .catch((error) => {
         toast.error("Something went wrong");
@@ -55,7 +51,6 @@ const TaskModal: React.FC<TaskModalProps> = ({ projectId }) => {
 
   const bodyContent = (
     <div className="flex flex-col gap-4">
-      <Heading title="Create a task" subtitle="Add a new task to you project" />
       <Input
         id="name"
         label="Name"
@@ -84,10 +79,10 @@ const TaskModal: React.FC<TaskModalProps> = ({ projectId }) => {
   return (
     <Modal
       disabled={isLoading}
-      isOpen={taskModal.isOpen}
-      title="Create a new Task"
-      actionLabel="Create"
-      onClose={taskModal.onClose}
+      isOpen={isOpen}
+      title="Update your Task"
+      actionLabel="Update"
+      onClose={onClose}
       onSubmit={handleSubmit(onSubmit)}
       body={bodyContent}
       footer={footerContent}
@@ -95,4 +90,4 @@ const TaskModal: React.FC<TaskModalProps> = ({ projectId }) => {
   );
 };
 
-export default TaskModal;
+export default TaskEditModal;
