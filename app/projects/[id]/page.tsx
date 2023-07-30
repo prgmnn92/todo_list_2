@@ -4,7 +4,6 @@ import ClientOnly from "@/app/components/ClientOnly";
 import Container from "@/app/components/Container";
 import EmptyState from "@/app/components/EmptyState";
 import Heading from "@/app/components/Heading";
-import TaskEditModal from "@/app/components/modals/TaskEditModal";
 import TaskModal from "@/app/components/modals/TaskModal";
 import ProjectStatusMenu from "@/app/components/project/ProjectStatusMenu";
 import AddTask from "@/app/components/task/AddTask";
@@ -38,7 +37,6 @@ export default async function Page({ params }: { params: { id: string } }) {
 
   return (
     <>
-      <TaskEditModal />
       <TaskModal projectId={params.id} />
       <main className="py-10 lg:pl-72">
         <Container>

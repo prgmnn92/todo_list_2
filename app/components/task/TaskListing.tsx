@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, Fragment, useState } from "react";
+import React, { useCallback, Fragment, useState, use } from "react";
 import { Menu, Transition } from "@headlessui/react";
 import { EllipsisVerticalIcon } from "@heroicons/react/20/solid";
 import { SafeTask } from "@/app/types";
@@ -7,9 +7,7 @@ import { format } from "date-fns";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import Skeleton from "../Skeleton";
-import useTaskEditModal from "@/app/hooks/useTaskEditModal";
-
-//TODO: add loading state
+import TaskEditModal from "../modals/TaskEditModal";
 
 interface TaskListingProps {
   task: SafeTask;
@@ -17,9 +15,16 @@ interface TaskListingProps {
 
 const TaskListing: React.FC<TaskListingProps> = ({ task }) => {
   const router = useRouter();
-  const taskEditModal = useTaskEditModal();
 
   const [isLoading, setIsLoading] = useState(false);
+
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const onOpen = useCallback(() => {
+    setModalIsOpen(true);
+  }, []);
+  const onClose = useCallback(() => {
+    setModalIsOpen(false);
+  }, []);
 
   const toggleTaskStatus = useCallback(() => {
     setIsLoading(true);
@@ -57,6 +62,7 @@ const TaskListing: React.FC<TaskListingProps> = ({ task }) => {
 
   return (
     <>
+      <TaskEditModal task={task} onClose={onClose} isOpen={modalIsOpen} />
       <li
         key={task.id}
         className={`${
@@ -116,7 +122,7 @@ const TaskListing: React.FC<TaskListingProps> = ({ task }) => {
                   {({ active }) => (
                     <a
                       href="#"
-                      onClick={() => taskEditModal.onOpen(task)}
+                      onClick={() => onOpen()}
                       className={`
                   ${active ? "bg-gray-50" : ""}
                   block px-3 py-1 text-sm leading-6 text-gray-900 cursor-pointer

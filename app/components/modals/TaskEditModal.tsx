@@ -12,11 +12,18 @@ import Input from "../inputs/Input";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { SafeTask } from "@/app/types";
-import useTaskEditModal from "@/app/hooks/useTaskEditModal";
 
-const TaskEditModal = () => {
-  const { task, isOpen, onClose } = useTaskEditModal();
+interface TaskEditModalProps {
+  task: SafeTask;
+  isOpen: boolean;
+  onClose: () => void;
+}
 
+const TaskEditModal: React.FC<TaskEditModalProps> = ({
+  task,
+  isOpen,
+  onClose,
+}) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
@@ -27,8 +34,8 @@ const TaskEditModal = () => {
     formState: { errors },
   } = useForm<FieldValues>({
     defaultValues: {
-      name: task?.name || "",
-      description: task?.description || "",
+      name: task.name || "",
+      description: task.description || "",
     },
   });
 
@@ -36,7 +43,7 @@ const TaskEditModal = () => {
     setIsLoading(true);
 
     axios
-      .put(`/api/task/${task?.id}`, data)
+      .put(`/api/task/${task.id}`, data)
       .then(() => {
         onClose();
       })
