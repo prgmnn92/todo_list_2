@@ -1,26 +1,61 @@
 "use client";
-import React from "react";
+import React, { useCallback } from "react";
 import { Fragment } from "react";
 import { Menu, Transition } from "@headlessui/react";
 import { EllipsisVerticalIcon } from "@heroicons/react/20/solid";
 import { SafeTask } from "@/app/types";
 import { format } from "date-fns";
-import Link from "next/link";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 interface TaskListingProps {
   task: SafeTask;
 }
 
 const TaskListing: React.FC<TaskListingProps> = ({ task }) => {
+  const router = useRouter();
+  const toggleTaskStatus = useCallback(() => {
+    axios
+      .put(`/api/task/${task.id}`, {
+        status: task.status === "Complete" ? "Not started" : "Complete",
+      })
+      .then((res) => res)
+      .catch((error) => console.log(error))
+      .finally(() => {
+        router.refresh();
+      });
+  }, [task, router]);
+
+  const deleteTask = useCallback(() => {
+    axios
+      .delete(`/api/task/${task.id}`)
+      .then((res) => res)
+      .catch((error) => console.log(error))
+      .finally(() => {
+        router.refresh();
+      });
+  }, [task, router]);
+
   return (
     <li
       key={task.id}
-      className="flex items-center justify-between py-5 gap-x-6"
+      className={`${
+        task.status === "Complete" ? "opacity-[.4]" : "opacity-100"
+      } flex items-center justify-between py-5 gap-x-6`}
     >
       <div className="min-w-0">
         <div className="flex items-start gap-x-3">
-          <p className="text-sm font-semibold leading-6 text-gray-900">
+          <p
+            className={`${
+              task.status === "Complete" ? "line-through" : ""
+            } text-sm font-semibold leading-6 text-gray-900`}
+          >
             {task.name}
+          </p>
+        </div>
+        <div className="flex items-start gap-x-3">
+          <p className={`text-sm font-normal leading-6 text-gray-900`}>
+            {task.description}
           </p>
         </div>
         <div className="flex items-center mt-1 text-xs leading-5 text-gray-500 gap-x-2">
@@ -33,12 +68,15 @@ const TaskListing: React.FC<TaskListingProps> = ({ task }) => {
         </div>
       </div>
       <div className="flex items-center flex-none gap-x-4">
-        <Link
-          href={`/projects/${task.id}`}
+        <div
+          onClick={toggleTaskStatus}
           className="hidden rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:block cursor-pointer"
         >
-          Mark as complete<span className="sr-only">, {task.name}</span>
-        </Link>
+          {task.status === "Complete"
+            ? "Mark as unfinished"
+            : "Mark as complete"}
+          <span className="sr-only">, {task.name}</span>
+        </div>
         <Menu as="div" className="relative flex-none">
           <Menu.Button className="-m-2.5 block p-2.5 text-gray-500 hover:text-gray-900">
             <span className="sr-only">Open options</span>
@@ -60,7 +98,7 @@ const TaskListing: React.FC<TaskListingProps> = ({ task }) => {
                     href="#"
                     className={`
                   ${active ? "bg-gray-50" : ""}
-                  block px-3 py-1 text-sm leading-6 text-gray-900
+                  block px-3 py-1 text-sm leading-6 text-gray-900 cursor-pointer
                 `}
                   >
                     Edit
@@ -71,10 +109,10 @@ const TaskListing: React.FC<TaskListingProps> = ({ task }) => {
               <Menu.Item>
                 {({ active }) => (
                   <a
-                    href="#"
+                    onClick={deleteTask}
                     className={`
                   ${active ? "bg-gray-50" : ""}
-                  "block px-3 py-1 text-sm leading-6 text-gray-900"
+                  "block px-3 py-1 text-sm leading-6 text-gray-900 cursor-pointer"
                 `}
                   >
                     Delete

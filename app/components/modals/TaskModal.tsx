@@ -11,7 +11,6 @@ import Modal from "./Modal";
 import Heading from "../Heading";
 import Input from "../inputs/Input";
 import { toast } from "react-hot-toast";
-import ImageUpload from "../inputs/ImageUpload";
 import useTaskModal from "@/app/hooks/useTaskModal";
 import { useRouter } from "next/navigation";
 
@@ -29,8 +28,6 @@ const TaskModal: React.FC<TaskModalProps> = ({ projectId }) => {
   const {
     register,
     handleSubmit,
-    setValue,
-    watch,
     formState: { errors },
   } = useForm<FieldValues>({
     defaultValues: {
@@ -39,16 +36,6 @@ const TaskModal: React.FC<TaskModalProps> = ({ projectId }) => {
       description: "",
     },
   });
-
-  const image = watch("image");
-
-  const setCustomValue = (id: string, value: any) => {
-    setValue(id, value, {
-      shouldDirty: true,
-      shouldTouch: true,
-      shouldValidate: true,
-    });
-  };
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true);
@@ -85,10 +72,6 @@ const TaskModal: React.FC<TaskModalProps> = ({ projectId }) => {
         register={register}
         errors={errors}
         required
-      />
-      <ImageUpload
-        onChange={(value) => setCustomValue("image", value)}
-        value={image}
       />
     </div>
   );

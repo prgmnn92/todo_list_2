@@ -6,11 +6,14 @@ import TaskModal from "@/app/components/modals/TaskModal";
 import AddTask from "@/app/components/task/AddTask";
 import TaskListing from "@/app/components/task/TaskListing";
 
+const statusOrder = {
+  "Not started": 1,
+  Complete: 2,
+};
+
 export default async function Page({ params }: { params: { id: string } }) {
   const project = await getProject(params.id);
   const tasks = await getTasks(params.id);
-
-  console.log({ tasks });
 
   return (
     <>
@@ -23,9 +26,12 @@ export default async function Page({ params }: { params: { id: string } }) {
           </div>
           <div className="flex flex-row"></div>
           <ul role="list" className="pt-4 divide-y divide-gray-100">
-            {tasks.map((task) => {
-              return <TaskListing key={task.id} task={task} />;
-            })}
+            {tasks
+              //@ts-ignore
+              .sort((a, b) => statusOrder[a.status] - statusOrder[b.status])
+              .map((task) => {
+                return <TaskListing key={task.id} task={task} />;
+              })}
           </ul>
         </Container>
       </main>

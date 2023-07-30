@@ -1,11 +1,13 @@
 "use client";
-import React from "react";
+import React, { useCallback } from "react";
 import { Fragment } from "react";
 import { Menu, Transition } from "@headlessui/react";
 import { EllipsisVerticalIcon } from "@heroicons/react/20/solid";
 import { SafeProject, SafeUser } from "@/app/types";
 import { format } from "date-fns";
 import Link from "next/link";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const statuses = {
   Completed: "text-green-400 bg-green-400/10 ring-green-500/10",
@@ -20,6 +22,18 @@ interface ProjectListingProps {
 }
 
 const ProjectListing: React.FC<ProjectListingProps> = ({ project, user }) => {
+  const router = useRouter();
+
+  const deleteTask = useCallback(() => {
+    axios
+      .delete(`/api/project/${project.id}`)
+      .then((res) => res)
+      .catch((error) => console.log(error))
+      .finally(() => {
+        router.refresh();
+      });
+  }, [project, router]);
+
   return (
     <li
       key={project.id}
@@ -94,10 +108,10 @@ const ProjectListing: React.FC<ProjectListingProps> = ({ project, user }) => {
               <Menu.Item>
                 {({ active }) => (
                   <a
-                    href="#"
+                    onClick={deleteTask}
                     className={`
                   ${active ? "bg-gray-50" : ""}
-                  "block px-3 py-1 text-sm leading-6 text-gray-900"
+                  "block px-3 py-1 text-sm leading-6 text-gray-900 cursor-pointer"
                 `}
                   >
                     Delete

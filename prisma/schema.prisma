@@ -47,7 +47,6 @@ model Task {
   id            String    @id @default(auto()) @map("_id") @db.ObjectId
   name          String
   description   String?
-  image         String?
   status        String?   @default("Not started")
   recurring     Boolean?  @default(false)
   recurringType String? //it could either be daily, weekly or motnhly

@@ -6,8 +6,6 @@ export async function PUT(request: Request) {
   const body = await request.json();
   const { id, name, email } = body;
 
-  console.log(body);
-
   const user = await prisma.user.update({
     where: {
       id: id,
