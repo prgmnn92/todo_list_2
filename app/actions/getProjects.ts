@@ -1,10 +1,12 @@
 import prisma from "@/app/libs/prismadb";
 import getCurrentUser from "./getCurrentUser";
 import { redirect } from "next/navigation";
+import getUsers from "./getUsers";
 
 export default async function getProjects() {
   try {
     const currentUser = await getCurrentUser();
+    const users = await getUsers();
 
     if (!currentUser) {
       redirect("/");
@@ -13,20 +15,22 @@ export default async function getProjects() {
 
     const projects = await prisma.project.findMany({
       where: {
-        creatorId: currentUser?.id,
+        userIds: { has: currentUser?.id },
       },
       orderBy: {
         createdAt: "desc",
       },
     });
 
-    const user = await prisma.user.findUnique({
-      where: {
-        id: currentUser?.id,
-      },
-    });
-
     const safeProjects = projects.map((project) => {
+      // const user = await prisma.user.findUnique({
+      //   where: {
+      //     id: project.creatorId,
+      //   },
+      // });
+
+      const user = users?.find((user) => user.id === project.creatorId);
+
       return {
         project: {
           ...project,
@@ -45,6 +49,6 @@ export default async function getProjects() {
 
     return safeProjects;
   } catch (error: any) {
-    throw new Error(error);
+    redirect("/");
   }
 }

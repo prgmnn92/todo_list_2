@@ -19,12 +19,13 @@ model User {
   hashedPassword String?
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
-  favoriteIds    String[]  @db.ObjectId
+  projectIds     String[]  @db.ObjectId
 
-  projects Project[]
-  account  Account[]
-  Task     Task?     @relation(fields: [taskId], references: [id])
-  taskId   String?   @db.ObjectId
+  account   Account[]
+  Task      Task?     @relation(fields: [taskId], references: [id])
+  taskId    String?   @db.ObjectId
+  Project   Project?  @relation(fields: [projectId], references: [id])
+  projectId String?   @db.ObjectId
 }
 
 model Project {
@@ -37,10 +38,10 @@ model Project {
   dueAt       DateTime?
   status      String    @default("Not Started")
   creatorId   String    @db.ObjectId
+  userIds     String[]  @db.ObjectId
 
   Task Task[]
-
-  creator User @relation(fields: [creatorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  User User[]
 }
 
 model Task {

@@ -1,12 +1,13 @@
 import prisma from "@/app/libs/prismadb";
 import getCurrentUser from "./getCurrentUser";
+import { redirect } from "next/navigation";
 
 export default async function getProject(projectId: string) {
   try {
     const currentUser = await getCurrentUser();
 
     if (!currentUser) {
-      throw Error("You need to be logged in to fetch a project");
+      redirect("/"); //TODO: error messages
     }
 
     const project = await prisma.project.findUnique({
@@ -28,6 +29,6 @@ export default async function getProject(projectId: string) {
 
     return safeProject;
   } catch (error: any) {
-    throw new Error(error);
+    redirect("/");
   }
 }

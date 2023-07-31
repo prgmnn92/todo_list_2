@@ -18,6 +18,7 @@ export async function POST(request: Request) {
       image,
       name,
       creatorId: currentUser.id,
+      userIds: [currentUser.id],
     },
   });
 

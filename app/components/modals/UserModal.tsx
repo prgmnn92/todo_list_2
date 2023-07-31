@@ -15,6 +15,7 @@ import { toast } from "react-hot-toast";
 import Button from "../Button";
 import { signOut } from "next-auth/react";
 import { SafeUser } from "@/app/types";
+import { useRouter } from "next/navigation";
 
 interface UserModalProps {
   currentUser?: SafeUser | null;
@@ -24,6 +25,8 @@ const UserModal: React.FC<UserModalProps> = ({ currentUser }) => {
   const userModal = useUserModal();
 
   const [isLoading, setIsLoading] = useState(false);
+
+  const router = useRouter();
 
   const {
     register,
@@ -58,7 +61,8 @@ const UserModal: React.FC<UserModalProps> = ({ currentUser }) => {
   const toggle = useCallback(() => {
     signOut();
     userModal.onClose();
-  }, [userModal]);
+    router.push("/");
+  }, [userModal, router]);
 
   const bodyContent = (
     <div className="flex flex-col gap-4">

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import prisma from "@/app/libs/prismadb";
 import getCurrentUser from "@/app/actions/getCurrentUser";
+import getProject from "@/app/actions/getProject";
 
 interface IParams {
   id?: string;
@@ -28,14 +29,40 @@ export async function DELETE(
 
 export async function PUT(request: Request, { params }: { params: IParams }) {
   const body = await request.json();
-  const { status } = body;
+  const { status, userId } = body;
+
+  const currentProject = await getProject(params.id || "");
+
+  let updateData = {};
+
+  let userIds = [...(currentProject.userIds || [])];
+
+  if (userIds.includes(userId)) {
+    return NextResponse.json({
+      message: "User ID is already included",
+    });
+  }
+  userIds.push(userId);
+
+  if (status) {
+    updateData = {
+      ...updateData,
+      status,
+    };
+  }
+  if (userId) {
+    updateData = {
+      ...updateData,
+      userIds,
+    };
+  }
 
   const project = await prisma.project.update({
     where: {
       id: params.id,
     },
     data: {
-      status,
+      ...updateData, //TODO: only update if id is not already included
     },
   });
 
