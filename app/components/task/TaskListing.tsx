@@ -26,17 +26,19 @@ const TaskListing: React.FC<TaskListingProps> = ({ task }) => {
     setModalIsOpen(false);
   }, []);
 
-  const toggleTaskStatus = useCallback(() => {
+  const toggleTaskStatus = useCallback(async () => {
     setIsLoading(true);
-    axios
+    await axios
       .put(`/api/task/${task.id}`, {
-        status: task.status === "Complete" ? "Not started" : "Complete",
+        status: task.status === "Complete" ? "Not Started" : "Complete",
       })
       .then((res) => res)
       .catch((error) => console.log(error))
       .finally(() => {
-        setIsLoading(false);
-        router.refresh();
+        setTimeout(() => {
+          setIsLoading(false);
+          router.refresh();
+        }, 300);
       });
   }, [task, router]);
 
@@ -47,18 +49,12 @@ const TaskListing: React.FC<TaskListingProps> = ({ task }) => {
       .then((res) => res)
       .catch((error) => console.log(error))
       .finally(() => {
-        setIsLoading(false);
-        router.refresh();
+        setTimeout(() => {
+          setIsLoading(false);
+          router.refresh();
+        }, 300);
       });
   }, [task, router]);
-
-  if (isLoading) {
-    return (
-      <div className="py-5">
-        <Skeleton />
-      </div>
-    );
-  }
 
   return (
     <>
@@ -94,15 +90,19 @@ const TaskListing: React.FC<TaskListingProps> = ({ task }) => {
           </div>
         </div>
         <div className="flex items-center flex-none gap-x-4">
-          <div
-            onClick={toggleTaskStatus}
-            className="hidden rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:block cursor-pointer"
-          >
-            {task.status === "Complete"
-              ? "Mark as unfinished"
-              : "Mark as complete"}
-            <span className="sr-only">, {task.name}</span>
-          </div>
+          {isLoading ? (
+            <Skeleton />
+          ) : (
+            <div
+              onClick={toggleTaskStatus}
+              className="hidden rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:block cursor-pointer"
+            >
+              {task.status === "Complete"
+                ? "Mark as unfinished"
+                : "Mark as complete"}
+              <span className="sr-only">, {task.name}</span>
+            </div>
+          )}
           <Menu as="div" className="relative flex-none">
             <Menu.Button className="-m-2.5 block p-2.5 text-gray-500 hover:text-gray-900">
               <span className="sr-only">Open options</span>

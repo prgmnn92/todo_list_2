@@ -2,7 +2,7 @@ import getProjects from "../actions/getProjects";
 import ClientOnly from "../components/ClientOnly";
 import Container from "../components/Container";
 import EmptyState from "../components/EmptyState";
-import Projects from "../projects";
+import ProjectOverview from "../components/ProjectOverview";
 
 export default async function Page() {
   const projectsWithUser = await getProjects();
@@ -20,7 +20,7 @@ export default async function Page() {
   return (
     <main className="py-10 lg:pl-72">
       <Container>
-        <Projects projectsWithUser={projectsWithUser} />
+        <ProjectOverview projectsWithUser={projectsWithUser} />
       </Container>
     </main>
   );

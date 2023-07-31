@@ -1,16 +1,16 @@
 "use client";
-import Button from "./components/Button";
+import Button from "./Button";
 import { AiOutlinePlus } from "react-icons/ai";
-import { SafeProject, SafeProjectWithUser, SafeUser } from "./types";
-import useProjectModal from "./hooks/useProjectModal";
+import { SafeProject, SafeProjectWithUser, SafeUser } from "../types";
+import useProjectModal from "../hooks/useProjectModal";
 
-import ProjectListing from "./components/project/ProjectListing";
+import ProjectListing from "./project/ProjectListing";
 
 interface ProjectsProps {
   projectsWithUser: any[]; //TODO:SafeProjectWithUser error occurs but it works... check later
 }
 
-const Projects: React.FC<ProjectsProps> = ({ projectsWithUser }) => {
+const ProjectOverview: React.FC<ProjectsProps> = ({ projectsWithUser }) => {
   const projectModal = useProjectModal();
 
   return (
@@ -45,4 +45,4 @@ const Projects: React.FC<ProjectsProps> = ({ projectsWithUser }) => {
   );
 };
 
-export default Projects;
+export default ProjectOverview;

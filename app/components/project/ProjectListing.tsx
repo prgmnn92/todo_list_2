@@ -8,11 +8,12 @@ import { format } from "date-fns";
 import Link from "next/link";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const statuses = {
   Complete: "text-green-400 bg-green-400/10 ring-green-500/10",
-  "In progress": "text-orange-600 bg-orange-50 ring-orange-500/10",
-  "Not started": "text-zinc-600 bg-zinc-50 ring-zinc-500/10",
+  "In Progress": "text-orange-600 bg-orange-50 ring-orange-500/10",
+  "Not Started": "text-zinc-600 bg-zinc-50 ring-zinc-500/10",
 };
 
 interface ProjectListingProps {
@@ -29,17 +30,30 @@ const ProjectListing: React.FC<ProjectListingProps> = ({ project, user }) => {
       .then((res) => res)
       .catch((error) => console.log(error))
       .finally(() => {
-        router.refresh();
+        setTimeout(() => {
+          router.refresh();
+        }, 300);
       });
   }, [project, router]);
 
   return (
     <li
       key={project.id}
-      className="flex items-center justify-between py-5 gap-x-6"
+      className={`${
+        project.status === "Complete" ? "opacity-[.4]" : "opacity-100"
+      } flex items-center justify-between py-5 gap-x-6`}
     >
       <div className="min-w-0">
-        <div className="flex items-start gap-x-3">
+        <div className="flex items-center gap-x-3">
+          <span>
+            <Image
+              height={200}
+              width={200}
+              className="inline-block object-cover w-8 h-8 rounded-full"
+              src={project.image || "/images/placeholder-image.jpg"}
+              alt=""
+            />
+          </span>
           <p className="text-sm font-semibold leading-6 text-gray-900">
             {project.name}
           </p>

@@ -35,7 +35,7 @@ model Project {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   dueAt       DateTime?
-  status      String    @default("Not started")
+  status      String    @default("Not Started")
   creatorId   String    @db.ObjectId
 
   Task Task[]
@@ -47,7 +47,7 @@ model Task {
   id            String    @id @default(auto()) @map("_id") @db.ObjectId
   name          String
   description   String?
-  status        String?   @default("Not started")
+  status        String?   @default("Not Started")
   recurring     Boolean?  @default(false)
   recurringType String? //it could either be daily, weekly or motnhly
   recurringDate DateTime?

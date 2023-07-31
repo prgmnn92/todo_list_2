@@ -19,7 +19,11 @@ const ProjectStatusMenu: React.FC<ProjectStatusMenuProps> = ({ project }) => {
         .put(`/api/project/${project.id}`, { status: status })
         .then((res) => res)
         .catch((error) => console.log(error))
-        .finally(() => router.refresh());
+        .finally(() => {
+          setTimeout(() => {
+            router.refresh();
+          }, 300);
+        });
     },
     [project, router]
   );

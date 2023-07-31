@@ -48,8 +48,10 @@ const TaskModal: React.FC<TaskModalProps> = ({ projectId }) => {
         toast.error("Something went wrong");
       })
       .finally(() => {
-        setIsLoading(false);
-        router.refresh();
+        setTimeout(() => {
+          setIsLoading(false);
+          router.refresh();
+        }, 300);
       });
   };
 

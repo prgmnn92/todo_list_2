@@ -51,8 +51,10 @@ const TaskEditModal: React.FC<TaskEditModalProps> = ({
         toast.error("Something went wrong");
       })
       .finally(() => {
-        setIsLoading(false);
-        router.refresh();
+        setTimeout(() => {
+          setIsLoading(false);
+          router.refresh();
+        }, 300);
       });
   };
 
