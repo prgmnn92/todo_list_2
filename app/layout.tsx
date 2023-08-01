@@ -7,6 +7,7 @@ import LoginModal from "./components/modals/LoginModal";
 import RegisterModal from "./components/modals/RegisterModal";
 import UserModal from "./components/modals/UserModal";
 import ProjectModal from "./components/modals/ProjectModal";
+import ToasterProvider from "./providers/ToasterProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,6 +26,7 @@ export default async function RootLayout({
   return (
     <html className="h-full bg-gray-50" lang="en">
       <body className={`${inter.className} h-full`}>
+        <ToasterProvider />
         <LoginModal />
         <RegisterModal />
         <ProjectModal />

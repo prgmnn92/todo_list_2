@@ -8,62 +8,50 @@ import { useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 
 import Modal from "./Modal";
-import Heading from "../Heading";
 import Input from "../inputs/Input";
 import { toast } from "react-hot-toast";
-import useTaskModal from "@/app/hooks/useTaskModal";
 import { useRouter } from "next/navigation";
-import Datepicker from "react-tailwindcss-datepicker";
+import { SafeProject, SafeUser } from "@/app/types";
+import UserSelect from "../project/UserSelect";
+import useProjectEditModal from "@/app/hooks/userProjectEditModal";
 
-interface TaskModalProps {
-  projectId: string;
+interface ProjectEditModalProps {
+  project: SafeProject;
+  users: SafeUser[];
 }
 
-const TaskModal: React.FC<TaskModalProps> = ({ projectId }) => {
-  const taskModal = useTaskModal();
+const ProjectEditModal: React.FC<ProjectEditModalProps> = ({
+  project,
+  users,
+}) => {
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  const [isLoading, setIsLoading] = useState(false);
+  const projectEditModal = useProjectEditModal();
 
   const {
     register,
     handleSubmit,
-    setValue,
-    watch,
     formState: { errors },
-    reset,
   } = useForm<FieldValues>({
     defaultValues: {
-      name: "",
-      description: "",
-      dueAt: "",
+      name: project.name || "",
+      description: project.description || "",
     },
   });
-
-  const dueAt = watch("dueAt");
-
-  const setCustomValue = (id: string, value: any) => {
-    setValue(id, value, {
-      shouldDirty: true,
-      shouldTouch: true,
-      shouldValidate: true,
-    });
-  };
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true);
 
     axios
-      .post("/api/task", { projectId, ...data })
+      .put(`/api/project/${project.id}`, data)
       .then(() => {
-        taskModal.onClose();
+        projectEditModal.onClose();
       })
       .catch((error) => {
         toast.error("Something went wrong");
       })
       .finally(() => {
-        toast.success("You've added a task");
-        reset();
         setTimeout(() => {
           setIsLoading(false);
           router.refresh();
@@ -73,7 +61,6 @@ const TaskModal: React.FC<TaskModalProps> = ({ projectId }) => {
 
   const bodyContent = (
     <div className="flex flex-col gap-4">
-      <Heading title="Create a task" subtitle="Add a new task to you project" />
       <Input
         id="name"
         label="Name"
@@ -90,17 +77,8 @@ const TaskModal: React.FC<TaskModalProps> = ({ projectId }) => {
         errors={errors}
         required
       />
-      <Datepicker
-        primaryColor={"indigo"}
-        useRange={false}
-        inputClassName={
-          "py-4 px-4 w-full border-[1px] border-solid border-black/20 rounded"
-        }
-        placeholder={"Pick a due date"}
-        asSingle={true}
-        onChange={(value) => setCustomValue("dueAt", value)}
-        value={dueAt}
-      />
+      {/* TODO: filter users that are already added */}
+      <UserSelect users={users} projectId={project.id} />
     </div>
   );
 
@@ -113,10 +91,10 @@ const TaskModal: React.FC<TaskModalProps> = ({ projectId }) => {
   return (
     <Modal
       disabled={isLoading}
-      isOpen={taskModal.isOpen}
-      title="Create a new Task"
-      actionLabel="Create"
-      onClose={taskModal.onClose}
+      isOpen={projectEditModal.isOpen}
+      title="Update your project"
+      actionLabel="Update"
+      onClose={projectEditModal.onClose}
       onSubmit={handleSubmit(onSubmit)}
       body={bodyContent}
       footer={footerContent}
@@ -124,4 +102,4 @@ const TaskModal: React.FC<TaskModalProps> = ({ projectId }) => {
   );
 };
 
-export default TaskModal;
+export default ProjectEditModal;

@@ -10,8 +10,9 @@ import TaskModal from "@/app/components/modals/TaskModal";
 import ProjectStatusMenu from "@/app/components/project/ProjectStatusMenu";
 import AddTask from "@/app/components/task/AddTask";
 import TaskListing from "@/app/components/task/TaskListing";
-import UserSelect from "@/app/components/project/UserSelect";
 import getUsers from "@/app/actions/getUsers";
+import ProjectOptionMenu from "@/app/components/project/ProjectOptionMenu";
+import ProjectEditModal from "@/app/components/modals/ProjectEditModal";
 
 const statusOrder = {
   "In Progress": 1,
@@ -44,6 +45,11 @@ export default async function Page({ params }: { params: { id: string } }) {
   return (
     <>
       <TaskModal projectId={params.id} />
+      <ProjectEditModal
+        //@ts-ignore
+        users={users}
+        project={project}
+      />
       <main className="py-10 lg:pl-72">
         <Container>
           <Image
@@ -53,32 +59,18 @@ export default async function Page({ params }: { params: { id: string } }) {
             src={project.image || "/images/placeholder-image.jpg"}
             alt=""
           />
-
-          <div className="flex flex-row justify-between">
-            <Heading title={project.name} subtitle="Manage your tasks!" />
-            <AddTask />
-          </div>
           <div className="flex flex-row justify-between gap-2">
-            <div className="flex items-center justify-start pt-4">
-              <p
-                className={`
-                ${
-                  //@ts-ignore
-                  statuses[project.status]
-                } 
-          rounded-md whitespace-nowrap mt-0.5 px-2.5 py-1 text-sm font-medium ring-1 ring-inset mr-2
-        `}
-              >
-                {project.status}
-              </p>
+            <div className="flex flex-row items-start justify-start gap-2">
+              <Heading
+                title={project.name}
+                subtitle={project.description || ""}
+              />
               <ProjectStatusMenu project={project} />
+              <div className="mt-2">
+                <ProjectOptionMenu />
+              </div>
             </div>
-            <div>
-              {
-                //@ts-ignore TODO: type error...
-                users && <UserSelect users={users} projectId={project.id} />
-              }
-            </div>
+            <AddTask />
           </div>
           <div className="flex flex-row"></div>
           <ul role="list" className="pt-4 divide-y divide-gray-100">

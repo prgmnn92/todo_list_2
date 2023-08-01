@@ -12,6 +12,7 @@ import Input from "../inputs/Input";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { SafeTask } from "@/app/types";
+import Datepicker from "react-tailwindcss-datepicker";
 
 interface TaskEditModalProps {
   task: SafeTask;
@@ -31,13 +32,26 @@ const TaskEditModal: React.FC<TaskEditModalProps> = ({
   const {
     register,
     handleSubmit,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<FieldValues>({
     defaultValues: {
       name: task.name || "",
       description: task.description || "",
+      dueAt: task.dueAt || "",
     },
   });
+
+  const dueAt = watch("dueAt");
+
+  const setCustomValue = (id: string, value: any) => {
+    setValue(id, value, {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: true,
+    });
+  };
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true);
@@ -75,6 +89,17 @@ const TaskEditModal: React.FC<TaskEditModalProps> = ({
         register={register}
         errors={errors}
         required
+      />
+      <Datepicker
+        primaryColor={"indigo"}
+        useRange={false}
+        inputClassName={
+          "py-4 px-4 w-full border-[1px] border-solid border-black/20 rounded"
+        }
+        placeholder={"Pick a due date"}
+        asSingle={true}
+        onChange={(value) => setCustomValue("dueAt", value)}
+        value={dueAt}
       />
     </div>
   );

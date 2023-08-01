@@ -29,7 +29,7 @@ export async function DELETE(
 
 export async function PUT(request: Request, { params }: { params: IParams }) {
   const body = await request.json();
-  const { status, userId } = body;
+  const { status, userId, description } = body;
 
   const currentProject = await getProject(params.id || "");
 
@@ -43,6 +43,13 @@ export async function PUT(request: Request, { params }: { params: IParams }) {
     });
   }
   userIds.push(userId);
+
+  if (description) {
+    updateData = {
+      ...updateData,
+      description,
+    };
+  }
 
   if (status) {
     updateData = {

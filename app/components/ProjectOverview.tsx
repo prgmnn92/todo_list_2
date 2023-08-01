@@ -1,7 +1,7 @@
 "use client";
 import Button from "./Button";
 import { AiOutlinePlus } from "react-icons/ai";
-import { SafeProject, SafeProjectWithUser, SafeUser } from "../types";
+import { SafeProject, SafeUser } from "../types";
 import useProjectModal from "../hooks/useProjectModal";
 
 import ProjectListing from "./project/ProjectListing";
@@ -9,6 +9,12 @@ import ProjectListing from "./project/ProjectListing";
 interface ProjectsProps {
   projectsWithUser: any[]; //TODO:SafeProjectWithUser error occurs but it works... check later
 }
+
+const statusOrder = {
+  "In Progress": 1,
+  "Not Started": 2,
+  Complete: 3,
+};
 
 const ProjectOverview: React.FC<ProjectsProps> = ({ projectsWithUser }) => {
   const projectModal = useProjectModal();
@@ -29,8 +35,15 @@ const ProjectOverview: React.FC<ProjectsProps> = ({ projectsWithUser }) => {
         </div>
       </div>
       <ul role="list" className="pt-4 divide-y divide-gray-100">
-        {projectsWithUser.map(
-          (item: { project: SafeProject; user: SafeUser }) => {
+        {projectsWithUser
+          .sort(
+            (a, b) =>
+              //@ts-ignore
+              statusOrder[a["project"].status] -
+              //@ts-ignore
+              statusOrder[b["project"].status]
+          )
+          .map((item: { project: SafeProject; user: SafeUser }) => {
             return (
               <ProjectListing
                 key={item.project.id}
@@ -38,8 +51,7 @@ const ProjectOverview: React.FC<ProjectsProps> = ({ projectsWithUser }) => {
                 user={item.user}
               />
             );
-          }
-        )}
+          })}
       </ul>
     </>
   );

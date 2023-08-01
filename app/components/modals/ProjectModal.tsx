@@ -26,6 +26,7 @@ const ProjectModal = () => {
     handleSubmit,
     setValue,
     watch,
+    reset,
     formState: { errors },
   } = useForm<FieldValues>({
     defaultValues: {
@@ -56,8 +57,12 @@ const ProjectModal = () => {
         toast.error("Something went wrong");
       })
       .finally(() => {
-        setIsLoading(false);
-        router.refresh();
+        toast.success("You've added a project");
+        reset();
+        setTimeout(() => {
+          setIsLoading(false);
+          router.refresh();
+        }, 300);
       });
   };
 

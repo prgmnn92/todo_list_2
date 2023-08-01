@@ -11,6 +11,13 @@ interface ProjectStatusMenuProps {
   project: SafeProject;
 }
 
+const statuses = {
+  Complete: "text-green-400 bg-green-400/10 ring-green-500/10",
+  "In Progress": "text-orange-600 bg-orange-50 ring-orange-500/10",
+  "Not Started": "text-zinc-600 bg-zinc-50 ring-zinc-500/10",
+  Error: "text-rose-400 bg-rose-400/10 ring-rose-500/10",
+};
+
 const ProjectStatusMenu: React.FC<ProjectStatusMenuProps> = ({ project }) => {
   const router = useRouter();
   const updateStatus = useCallback(
@@ -31,7 +38,18 @@ const ProjectStatusMenu: React.FC<ProjectStatusMenuProps> = ({ project }) => {
     <Menu as="div" className="relative flex-none">
       <Menu.Button className="-m-2.5 block p-2.5 text-gray-500 hover:text-gray-900">
         <span className="sr-only">Open options</span>
-        <EllipsisVerticalIcon className="w-5 h-5" aria-hidden="true" />
+        {/* <EllipsisVerticalIcon className="w-5 h-5" aria-hidden="true" /> */}
+        <p
+          className={`
+                ${
+                  //@ts-ignore
+                  statuses[project.status]
+                } 
+          rounded-md whitespace-nowrap mt-0.5 px-2.5 py-1 text-sm font-medium ring-1 ring-inset mr-2
+        `}
+        >
+          {project.status}
+        </p>
       </Menu.Button>
       <Transition
         as={Fragment}
@@ -64,34 +82,6 @@ const ProjectStatusMenu: React.FC<ProjectStatusMenuProps> = ({ project }) => {
               </Menu.Item>
             );
           })}
-          {/* <Menu.Item>
-            {({ active }) => (
-              <a
-                href="#"
-                className={`
-        ${active ? "bg-gray-50" : ""}
-        block px-3 py-1 text-sm leading-6 text-gray-900 cursor-pointer
-      `}
-              >
-                Edit
-                <span className="sr-only">, {project.name}</span>
-              </a>
-            )}
-          </Menu.Item>
-          <Menu.Item>
-            {({ active }) => (
-              <a
-                href="#"
-                className={`
-        ${active ? "bg-gray-50" : ""}
-        "block px-3 py-1 text-sm leading-6 text-gray-900 cursor-pointer"
-      `}
-              >
-                Delete
-                <span className="sr-only">, {project.name}</span>
-              </a>
-            )}
-          </Menu.Item> */}
         </Menu.Items>
       </Transition>
     </Menu>

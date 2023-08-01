@@ -108,24 +108,10 @@ const ProjectListing: React.FC<ProjectListingProps> = ({ project, user }) => {
                 {({ active }) => (
                   <a
                     href="#"
-                    className={`
-                  ${active ? "bg-gray-50" : ""}
-                  block px-3 py-1 text-sm leading-6 text-gray-900
-                `}
-                  >
-                    Edit
-                    <span className="sr-only">, {project.name}</span>
-                  </a>
-                )}
-              </Menu.Item>
-              <Menu.Item>
-                {({ active }) => (
-                  <a
-                    href="#"
                     onClick={deleteTask}
                     className={`
                   ${active ? "bg-gray-50" : ""}
-                  "block px-3 py-1 text-sm leading-6 text-gray-900 cursor-pointer"
+                  "block px-3 py-1 text-sm leading-6 text-gray-900"
                 `}
                   >
                     Delete

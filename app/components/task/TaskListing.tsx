@@ -82,9 +82,9 @@ const TaskListing: React.FC<TaskListingProps> = ({ task }) => {
           </div>
           <div className="flex items-center mt-1 text-xs leading-5 text-gray-500 gap-x-2">
             <p className="whitespace-nowrap">
-              Created at{" "}
-              <time dateTime={task.createdAt}>
-                {format(new Date(task.createdAt), "PPP")}
+              Due at{" "}
+              <time dateTime={task.dueAt!}>
+                {format(new Date(task.dueAt!), "PPP")}
               </time>
             </p>
           </div>
@@ -140,7 +140,7 @@ const TaskListing: React.FC<TaskListingProps> = ({ task }) => {
                       onClick={deleteTask}
                       className={`
                   ${active ? "bg-gray-50" : ""}
-                  "block px-3 py-1 text-sm leading-6 text-gray-900 cursor-pointer"
+                  "block px-3 py-1 text-sm leading-6 text-gray-900"
                 `}
                     >
                       Delete

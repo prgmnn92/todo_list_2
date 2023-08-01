@@ -26,7 +26,7 @@ export async function PUT(request: Request, { params }: { params: IParams }) {
     updateData = { ...updateData, status };
   }
   if (dueAt) {
-    updateData = { ...updateData, dueAt };
+    updateData = { ...updateData, dueAt: new Date(dueAt.endDate) }; //TODO: find better way to set due date
   }
   if (description) {
     updateData = { ...updateData, description };
