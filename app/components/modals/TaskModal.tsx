@@ -88,7 +88,6 @@ const TaskModal: React.FC<TaskModalProps> = ({ projectId }) => {
         disabled={isLoading}
         register={register}
         errors={errors}
-        required
       />
       <Datepicker
         primaryColor={"indigo"}

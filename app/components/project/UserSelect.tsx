@@ -6,7 +6,6 @@ import Image from "next/image";
 import { SafeUser } from "@/app/types";
 import Button from "../Button";
 import axios from "axios";
-import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 
 interface UserSelectProps {

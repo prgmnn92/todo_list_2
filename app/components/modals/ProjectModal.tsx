@@ -31,6 +31,7 @@ const ProjectModal = () => {
   } = useForm<FieldValues>({
     defaultValues: {
       name: "",
+      description: "",
       image: "",
     },
   });
@@ -72,6 +73,14 @@ const ProjectModal = () => {
       <Input
         id="name"
         label="Name"
+        disabled={isLoading}
+        register={register}
+        errors={errors}
+        required
+      />
+      <Input
+        id="description"
+        label="Description"
         disabled={isLoading}
         register={register}
         errors={errors}

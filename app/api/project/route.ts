@@ -11,12 +11,13 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json();
-  const { image, name } = body;
+  const { image, name, description } = body;
 
   const project = await prisma.project.create({
     data: {
       image,
       name,
+      description,
       creatorId: currentUser.id,
       userIds: [currentUser.id],
     },

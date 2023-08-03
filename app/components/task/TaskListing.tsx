@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, Fragment, useState, use } from "react";
+import React, { useCallback, Fragment, useState } from "react";
 import { Menu, Transition } from "@headlessui/react";
 import { EllipsisVerticalIcon } from "@heroicons/react/20/solid";
 import { SafeTask } from "@/app/types";
@@ -8,6 +8,11 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import Skeleton from "../Skeleton";
 import TaskEditModal from "../modals/TaskEditModal";
+
+//TODO: assign users to tasks, but only users that are assigned to the project are assignable
+//TODO: Show a small avatar of them behind the tasks name
+//TODO: assigned tasks should show up on the dashboard
+//TODO: assigned tasks should show up on the calendar
 
 interface TaskListingProps {
   task: SafeTask;
@@ -82,7 +87,7 @@ const TaskListing: React.FC<TaskListingProps> = ({ task }) => {
           </div>
           <div className="flex items-center mt-1 text-xs leading-5 text-gray-500 gap-x-2">
             <p className="whitespace-nowrap">
-              Due at{" "}
+              Due{" "}
               <time dateTime={task.dueAt!}>
                 {format(new Date(task.dueAt!), "PPP")}
               </time>
