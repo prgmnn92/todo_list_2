@@ -78,7 +78,7 @@ export default async function Page({ params }: { params: { id: string } }) {
               //@ts-ignore
               .sort((a, b) => statusOrder[a.status] - statusOrder[b.status])
               .map((task) => {
-                return <TaskListing key={task.id} task={task} />;
+                return <TaskListing key={task.id} task={task} users={users} />;
               })}
           </ul>
         </Container>

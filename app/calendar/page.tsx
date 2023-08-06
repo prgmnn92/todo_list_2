@@ -1,13 +1,13 @@
-import getProjects from "../actions/getProjects";
+import getTasksForCurrentUser from "../actions/getTasksForCurrentUser";
 import Calendar from "../components/Calendar";
 import ClientOnly from "../components/ClientOnly";
 import Container from "../components/Container";
 import EmptyState from "../components/EmptyState";
 
 export default async function Page() {
-  const projectsWithUser = await getProjects();
+  const tasks = await getTasksForCurrentUser();
 
-  if (!projectsWithUser) {
+  if (!tasks) {
     return (
       <main className="py-10 lg:pl-72">
         <ClientOnly>
@@ -20,7 +20,7 @@ export default async function Page() {
   return (
     <main className="py-10 lg:pl-72">
       <Container>
-        <Calendar />
+        <Calendar tasks={tasks} />
       </Container>
     </main>
   );

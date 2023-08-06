@@ -15,34 +15,32 @@ import {
   endOfWeek,
   format,
   getDay,
+  isSameDay,
   isSameMonth,
   isToday,
   parse,
   startOfToday,
   startOfWeek,
 } from "date-fns";
-
-type EventType = {
-  id: number;
-  name: string;
-  time: string;
-  datetime: string;
-  href: string;
-};
+import { SafeTask } from "../types";
 
 type DayType = {
   date: string;
   isCurrentMonth: boolean;
   isToday: boolean;
   isSelected: boolean;
-  events: EventType[];
+  events: SafeTask[];
 };
 
 function classNames(...classes: any[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Calendar() {
+interface CalendarProps {
+  tasks: SafeTask[];
+}
+
+const Calendar: React.FC<CalendarProps> = ({ tasks }) => {
   const today = startOfToday();
   const [currMonth, setCurrMonth] = useState(() => format(today, "MMMM yyyy"));
   let firstDayOfMonth = parse(currMonth, "MMMM yyyy", new Date());
@@ -62,20 +60,25 @@ export default function Calendar() {
     setCurrMonth(format(firstDayOfNextMonth, "MMMM yyyy"));
   };
 
-  console.log(currMonth);
-  console.log(daysInMonth);
+  console.log(tasks);
 
   const setCurrentMonthList = (daysInMonth: Date[]): DayType[] => {
-    return daysInMonth.map((day: Date) => ({
-      date: format(day, "yyyy-MM-dd"),
-      isCurrentMonth: isSameMonth(
-        day,
-        parse(currMonth, "MMMM yyyy", new Date())
-      ),
-      isSelected: false,
-      isToday: isToday(day),
-      events: [],
-    }));
+    return daysInMonth.map((day: Date) => {
+      const currentTasks = tasks.filter((task) =>
+        isSameDay(new Date(task.dueAt || new Date()), day)
+      );
+
+      return {
+        date: format(day, "yyyy-MM-dd"),
+        isCurrentMonth: isSameMonth(
+          day,
+          parse(currMonth, "MMMM yyyy", new Date())
+        ),
+        isSelected: isToday(day) ? true : false,
+        isToday: isToday(day),
+        events: [...currentTasks],
+      };
+    });
   };
   const days = setCurrentMonthList(daysInMonth);
   const selectedDay = days.find((day) => day?.isSelected) || [];
@@ -205,13 +208,13 @@ export default function Calendar() {
                 </Menu.Items>
               </Transition>
             </Menu> */}
-            <div className="w-px h-6 ml-6 bg-gray-300" />
+            {/* <div className="w-px h-6 ml-6 bg-gray-300" />
             <button
               type="button"
               className="px-3 py-2 ml-6 text-sm font-semibold text-white bg-indigo-600 rounded-md shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               Add event
-            </button>
+            </button> */}
           </div>
           <Menu as="div" className="relative ml-6 md:hidden">
             <Menu.Button className="flex items-center p-2 -mx-2 text-gray-400 border border-transparent rounded-full hover:text-gray-500">
@@ -378,15 +381,19 @@ export default function Calendar() {
                   <ol className="mt-2">
                     {day.events.slice(0, 2).map((event) => (
                       <li key={event.id}>
-                        <a href={event.href} className="flex group">
+                        <a
+                          href={`/projects/${event.projectId}`}
+                          className="flex group"
+                        >
                           <p className="flex-auto font-medium text-gray-900 truncate group-hover:text-indigo-600">
                             {event.name}
                           </p>
                           <time
-                            dateTime={event.datetime}
+                            //@ts-ignore
+                            dateTime={event.dueAt}
                             className="flex-none hidden ml-3 text-gray-500 group-hover:text-indigo-600 xl:block"
                           >
-                            {event.time}
+                            {event.dueAt}
                           </time>
                         </a>
                       </li>
@@ -452,7 +459,7 @@ export default function Calendar() {
       </div>
       {
         //@ts-ignore
-        selectedDay.events.length > 0 && (
+        selectedDay.events?.length > 0 && (
           <div className="px-4 py-10 sm:px-6 lg:hidden">
             <ol className="overflow-hidden text-sm bg-white divide-y divide-gray-100 rounded-lg shadow ring-1 ring-black ring-opacity-5">
               {
@@ -492,4 +499,6 @@ export default function Calendar() {
       }
     </div>
   );
-}
+};
+
+export default Calendar;

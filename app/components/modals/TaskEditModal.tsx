@@ -11,19 +11,22 @@ import Modal from "./Modal";
 import Input from "../inputs/Input";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { SafeTask } from "@/app/types";
+import { SafeTask, SafeUser } from "@/app/types";
 import Datepicker from "react-tailwindcss-datepicker";
+import UserSelect from "../task/UserSelect";
 
 interface TaskEditModalProps {
   task: SafeTask;
   isOpen: boolean;
   onClose: () => void;
+  users: SafeUser[];
 }
 
 const TaskEditModal: React.FC<TaskEditModalProps> = ({
   task,
   isOpen,
   onClose,
+  users,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -101,6 +104,7 @@ const TaskEditModal: React.FC<TaskEditModalProps> = ({
         onChange={(value) => setCustomValue("dueAt", value)}
         value={dueAt}
       />
+      <UserSelect users={users} taskId={task.id} />
     </div>
   );
 

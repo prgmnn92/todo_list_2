@@ -55,6 +55,7 @@ model Task {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   dueAt         DateTime?
+  userIds       String[]  @db.ObjectId
 
   project    Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId  String?  @db.ObjectId

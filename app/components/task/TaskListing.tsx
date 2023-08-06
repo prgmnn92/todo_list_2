@@ -2,7 +2,7 @@
 import React, { useCallback, Fragment, useState } from "react";
 import { Menu, Transition } from "@headlessui/react";
 import { EllipsisVerticalIcon } from "@heroicons/react/20/solid";
-import { SafeTask } from "@/app/types";
+import { SafeTask, SafeUser } from "@/app/types";
 import { format } from "date-fns";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -16,9 +16,10 @@ import TaskEditModal from "../modals/TaskEditModal";
 
 interface TaskListingProps {
   task: SafeTask;
+  users: SafeUser[];
 }
 
-const TaskListing: React.FC<TaskListingProps> = ({ task }) => {
+const TaskListing: React.FC<TaskListingProps> = ({ task, users }) => {
   const router = useRouter();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -63,7 +64,12 @@ const TaskListing: React.FC<TaskListingProps> = ({ task }) => {
 
   return (
     <>
-      <TaskEditModal task={task} onClose={onClose} isOpen={modalIsOpen} />
+      <TaskEditModal
+        task={task}
+        onClose={onClose}
+        isOpen={modalIsOpen}
+        users={users}
+      />
       <li
         key={task.id}
         className={`${
