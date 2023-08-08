@@ -12,7 +12,7 @@ import Input from "../inputs/Input";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { SafeProject, SafeUser } from "@/app/types";
-import UserSelectProject from "../project/UserSelect";
+import ProjectUserSelect from "../project/ProjectUserSelect";
 import useProjectEditModal from "@/app/hooks/userProjectEditModal";
 
 interface ProjectEditModalProps {
@@ -78,7 +78,7 @@ const ProjectEditModal: React.FC<ProjectEditModalProps> = ({
         required
       />
       {/* TODO: filter users that are already added */}
-      <UserSelectProject users={users} projectId={project.id} />
+      <ProjectUserSelect users={users} projectId={project.id} />
     </div>
   );
 

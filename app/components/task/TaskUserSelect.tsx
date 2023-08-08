@@ -8,10 +8,10 @@ import UserSelect from "../UserSelect";
 
 interface UserSelectProps {
   users: SafeUser[];
-  projectId: string;
+  taskId: string;
 }
 
-const UserSelectProject: React.FC<UserSelectProps> = ({ users, projectId }) => {
+const TaskUserSelect: React.FC<UserSelectProps> = ({ users, taskId }) => {
   //@ts-ignore TODO: users can be null
   const [selected, setSelected] = useState(users[0]);
   const [isLoading, setIsLoading] = useState(false);
@@ -21,7 +21,7 @@ const UserSelectProject: React.FC<UserSelectProps> = ({ users, projectId }) => {
     try {
       setIsLoading(true);
       axios
-        .put(`/api/project/${projectId}`, { userId: selected.id })
+        .put(`/api/task/${taskId}`, { userId: selected.id })
         .then((res) => {
           if (res.status === 200) {
             setIsLoading(false);
@@ -52,4 +52,4 @@ const UserSelectProject: React.FC<UserSelectProps> = ({ users, projectId }) => {
   );
 };
 
-export default UserSelectProject;
+export default TaskUserSelect;

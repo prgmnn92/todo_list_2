@@ -13,7 +13,7 @@ import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { SafeTask, SafeUser } from "@/app/types";
 import Datepicker from "react-tailwindcss-datepicker";
-import UserSelectTask from "../task/UserSelect";
+import TaskUserSelect from "../task/TaskUserSelect";
 
 interface TaskEditModalProps {
   task: SafeTask;
@@ -107,7 +107,7 @@ const TaskEditModal: React.FC<TaskEditModalProps> = ({
         onChange={(value) => setCustomValue("dueAt", value)}
         value={dueAt}
       />
-      <UserSelectTask users={users} taskId={task.id} />
+      <TaskUserSelect users={users} taskId={task.id} />
     </div>
   );
 
