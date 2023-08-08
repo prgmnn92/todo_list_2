@@ -29,7 +29,7 @@ export async function DELETE(
 
 export async function PUT(request: Request, { params }: { params: IParams }) {
   const body = await request.json();
-  const { status, userId, description } = body;
+  const { status, userId, description, isRemoveUser } = body;
 
   const currentProject = await getProject(params.id || "");
 
@@ -37,12 +37,16 @@ export async function PUT(request: Request, { params }: { params: IParams }) {
 
   let userIds = [...(currentProject.userIds || [])];
 
-  if (userIds.includes(userId)) {
-    return NextResponse.json({
-      message: "User ID is already included",
-    });
+  if (isRemoveUser) {
+    userIds = userIds.filter((listId) => listId !== userId);
+  } else {
+    if (userIds.includes(userId)) {
+      return NextResponse.json({
+        message: "User ID is already included",
+      });
+    }
+    userIds.push(userId);
   }
-  userIds.push(userId);
 
   if (description) {
     updateData = {

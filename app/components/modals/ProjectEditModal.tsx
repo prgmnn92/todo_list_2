@@ -78,7 +78,11 @@ const ProjectEditModal: React.FC<ProjectEditModalProps> = ({
         required
       />
       {/* TODO: filter users that are already added */}
-      <ProjectUserSelect users={users} projectId={project.id} />
+      <ProjectUserSelect
+        users={users}
+        projectId={project.id}
+        addedUserList={project.userIds}
+      />
     </div>
   );
 

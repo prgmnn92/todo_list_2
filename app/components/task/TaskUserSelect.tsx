@@ -9,9 +9,14 @@ import UserSelect from "../UserSelect";
 interface UserSelectProps {
   users: SafeUser[];
   taskId: string;
+  addedUserList: string[];
 }
 
-const TaskUserSelect: React.FC<UserSelectProps> = ({ users, taskId }) => {
+const TaskUserSelect: React.FC<UserSelectProps> = ({
+  users,
+  taskId,
+  addedUserList,
+}) => {
   //@ts-ignore TODO: users can be null
   const [selected, setSelected] = useState(users[0]);
   const [isLoading, setIsLoading] = useState(false);
@@ -30,7 +35,32 @@ const TaskUserSelect: React.FC<UserSelectProps> = ({ users, taskId }) => {
         })
         .catch((error) => console.log(error))
         .finally(() => {
-          toast.success(`Succesfully added ${selected.name} to project`);
+          toast.success(`Succesfully added ${selected.name} to task`);
+          setIsLoading(false);
+          // router.refresh();
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const removeUser = () => {
+    try {
+      setIsLoading(true);
+      axios
+        .put(`/api/task/${taskId}`, {
+          userId: selected.id,
+          isRemoveUser: true,
+        })
+        .then((res) => {
+          if (res.status === 200) {
+            setIsLoading(false);
+            router.refresh();
+          }
+        })
+        .catch((error) => console.log(error))
+        .finally(() => {
+          toast.success(`Succesfully removed ${selected.name} from task`);
           setIsLoading(false);
           // router.refresh();
         });
@@ -48,6 +78,8 @@ const TaskUserSelect: React.FC<UserSelectProps> = ({ users, taskId }) => {
       addUserAction={addUser}
       selectUser={setSelected}
       selectedUser={selected}
+      addedUserList={addedUserList}
+      removeUserAction={removeUser}
     />
   );
 };

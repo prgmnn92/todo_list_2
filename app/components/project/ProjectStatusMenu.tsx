@@ -24,7 +24,11 @@ const ProjectStatusMenu: React.FC<ProjectStatusMenuProps> = ({ project }) => {
     (status: string) => {
       axios
         .put(`/api/project/${project.id}`, { status: status })
-        .then((res) => res)
+        .then((res) => {
+          if (res.status === 200) {
+            router.refresh();
+          }
+        })
         .catch((error) => console.log(error))
         .finally(() => {
           setTimeout(() => {

@@ -17,16 +17,21 @@ export async function PUT(request: Request, { params }: { params: IParams }) {
   }
 
   const body = await request.json();
-  const { name, description, status, dueAt, userId } = body;
+  const { name, description, status, dueAt, userId, isRemoveUser } = body;
 
+  console.log(body);
   let userIds = [...(currentTask.userIds || [])];
 
-  if (userIds.includes(userId)) {
-    return NextResponse.json({
-      message: "User ID is already included",
-    });
+  if (isRemoveUser) {
+    userIds = userIds.filter((listId) => listId !== userId);
+  } else {
+    if (userIds.includes(userId)) {
+      return NextResponse.json({
+        message: "User ID is already included",
+      });
+    }
+    userIds.push(userId);
   }
-  userIds.push(userId);
 
   let updateData = {};
 

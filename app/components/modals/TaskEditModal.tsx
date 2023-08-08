@@ -107,7 +107,11 @@ const TaskEditModal: React.FC<TaskEditModalProps> = ({
         onChange={(value) => setCustomValue("dueAt", value)}
         value={dueAt}
       />
-      <TaskUserSelect users={users} taskId={task.id} />
+      <TaskUserSelect
+        users={users}
+        taskId={task.id}
+        addedUserList={task.userIds}
+      />
     </div>
   );
 

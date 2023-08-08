@@ -9,9 +9,14 @@ import UserSelect from "../UserSelect";
 interface UserSelectProps {
   users: SafeUser[];
   projectId: string;
+  addedUserList: string[];
 }
 
-const ProjectUserSelect: React.FC<UserSelectProps> = ({ users, projectId }) => {
+const ProjectUserSelect: React.FC<UserSelectProps> = ({
+  users,
+  projectId,
+  addedUserList,
+}) => {
   //@ts-ignore TODO: users can be null
   const [selected, setSelected] = useState(users[0]);
   const [isLoading, setIsLoading] = useState(false);
@@ -39,6 +44,31 @@ const ProjectUserSelect: React.FC<UserSelectProps> = ({ users, projectId }) => {
     }
   };
 
+  const removeUser = () => {
+    try {
+      setIsLoading(true);
+      axios
+        .put(`/api/project/${projectId}`, {
+          userId: selected.id,
+          isRemoveUser: true,
+        })
+        .then((res) => {
+          if (res.status === 200) {
+            setIsLoading(false);
+            router.refresh();
+          }
+        })
+        .catch((error) => console.log(error))
+        .finally(() => {
+          toast.success(`Succesfully removed ${selected.name} from project`);
+          setIsLoading(false);
+          // router.refresh();
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   if (!users) {
     return <></>;
   }
@@ -48,6 +78,8 @@ const ProjectUserSelect: React.FC<UserSelectProps> = ({ users, projectId }) => {
       addUserAction={addUser}
       selectUser={setSelected}
       selectedUser={selected}
+      addedUserList={addedUserList}
+      removeUserAction={removeUser}
     />
   );
 };

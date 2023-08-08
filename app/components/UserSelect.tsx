@@ -9,8 +9,10 @@ import Button from "./Button";
 interface UserSelectProps {
   users: SafeUser[];
   addUserAction: () => void;
+  removeUserAction: () => void;
   selectUser: Dispatch<SetStateAction<SafeUser>>;
   selectedUser: SafeUser;
+  addedUserList?: string[];
 }
 
 const UserSelect: React.FC<UserSelectProps> = ({
@@ -18,12 +20,14 @@ const UserSelect: React.FC<UserSelectProps> = ({
   addUserAction,
   selectUser,
   selectedUser,
+  addedUserList,
+  removeUserAction,
 }) => {
   if (!users) {
     return <></>;
   }
   return (
-    <div className="flex flex-row items-center justify-center gap-2">
+    <div className="flex flex-row items-center justify-start gap-2">
       <Listbox value={selectedUser} onChange={selectUser}>
         {({ open }) => (
           <>
@@ -60,57 +64,65 @@ const UserSelect: React.FC<UserSelectProps> = ({
                 leaveTo="opacity-0"
               >
                 <Listbox.Options className="absolute z-10 w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-56 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                  {users.map((person) => (
-                    <Listbox.Option
-                      key={person.id}
-                      className={({ active }) => `
+                  {users.map((person) => {
+                    const isAdded = addedUserList?.includes(person.id);
+                    return (
+                      <Listbox.Option
+                        key={person.id}
+                        className={({ active }) => `
                         ${active ? "bg-indigo-600 text-white" : "text-gray-900"}
                         relative cursor-default select-none py-2 pl-3 pr-9`}
-                      value={person}
-                    >
-                      {({ selected, active }) => (
-                        <>
-                          <div className="flex items-center">
-                            <Image
-                              src={person.image || "/images/placeholder.jpg"}
-                              alt={person.name || ""}
-                              height={200}
-                              width={200}
-                              className="flex-shrink-0 w-5 h-5 rounded-full"
-                            />
-                            <span
-                              className={`
+                        value={person}
+                      >
+                        {({ selected, active }) => (
+                          <>
+                            <div className="flex items-center">
+                              <Image
+                                src={person.image || "/images/placeholder.jpg"}
+                                alt={person.name || ""}
+                                height={200}
+                                width={200}
+                                className="flex-shrink-0 w-5 h-5 rounded-full"
+                              />
+                              <span
+                                className={`
                               ${selected ? "font-semibold" : "font-normal"}
                               ml-3 block truncate`}
-                            >
-                              {person.name}
-                            </span>
-                          </div>
+                              >
+                                {person.name}
+                              </span>
+                            </div>
 
-                          {selected ? (
-                            <span
-                              className={`
-                              ${active ? "text-white" : "text-indigo-600"}
+                            {isAdded ? (
+                              <span
+                                className={`
+                              ${!isAdded ? "text-white" : "text-green-600"}
                               absolute inset-y-0 right-0 flex items-center pr-4`}
-                            >
-                              <CheckIcon
-                                className="w-5 h-5"
-                                aria-hidden="true"
-                              />
-                            </span>
-                          ) : null}
-                        </>
-                      )}
-                    </Listbox.Option>
-                  ))}
+                              >
+                                <CheckIcon
+                                  className="w-5 h-5"
+                                  aria-hidden="true"
+                                />
+                              </span>
+                            ) : null}
+                          </>
+                        )}
+                      </Listbox.Option>
+                    );
+                  })}
                 </Listbox.Options>
               </Transition>
             </div>
           </>
         )}
       </Listbox>
-
-      <Button small label="Add User" onClick={addUserAction} />
+      <div>
+        {addedUserList?.includes(selectedUser.id) ? (
+          <Button small label="Remove User" onClick={removeUserAction} />
+        ) : (
+          <Button small label="Add User" onClick={addUserAction} />
+        )}
+      </div>
     </div>
   );
 };
