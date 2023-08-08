@@ -7,6 +7,7 @@ import { SafeUser } from "@/app/types";
 import Button from "../Button";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 interface UserSelectProps {
   users: SafeUser[];
@@ -17,14 +18,19 @@ const UserSelect: React.FC<UserSelectProps> = ({ users, projectId }) => {
   //@ts-ignore TODO: users can be null
   const [selected, setSelected] = useState(users[0]);
   const [isLoading, setIsLoading] = useState(false);
-  // const router = useRouter();
+  const router = useRouter();
 
   const addUser = () => {
     try {
       setIsLoading(true);
       axios
         .put(`/api/project/${projectId}`, { userId: selected.id })
-        .then((res) => console.log(res))
+        .then((res) => {
+          if (res.status === 200) {
+            setIsLoading(false);
+            router.refresh();
+          }
+        })
         .catch((error) => console.log(error))
         .finally(() => {
           toast.success(`Succesfully added ${selected.name} to project`);

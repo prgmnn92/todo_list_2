@@ -1,7 +1,6 @@
 "use client";
 import { Fragment, useState } from "react";
 import {
-  ChevronDownIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
   ClockIcon,
@@ -59,8 +58,6 @@ const Calendar: React.FC<CalendarProps> = ({ tasks }) => {
     const firstDayOfNextMonth = add(firstDayOfMonth, { months: 1 });
     setCurrMonth(format(firstDayOfNextMonth, "MMMM yyyy"));
   };
-
-  console.log(tasks);
 
   const setCurrentMonthList = (daysInMonth: Date[]): DayType[] => {
     return daysInMonth.map((day: Date) => {

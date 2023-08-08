@@ -10,9 +10,10 @@ import TaskModal from "@/app/components/modals/TaskModal";
 import ProjectStatusMenu from "@/app/components/project/ProjectStatusMenu";
 import AddTask from "@/app/components/task/AddTask";
 import TaskListing from "@/app/components/task/TaskListing";
-import getUsers from "@/app/actions/getUsers";
 import ProjectOptionMenu from "@/app/components/project/ProjectOptionMenu";
 import ProjectEditModal from "@/app/components/modals/ProjectEditModal";
+import getUsersForProject from "@/app/actions/getUsersForProject";
+import getUsers from "@/app/actions/getUsers";
 
 const statusOrder = {
   "In Progress": 1,
@@ -31,6 +32,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   const project = await getProject(params.id);
   const tasks = await getTasks(params.id);
   const users = await getUsers();
+  const usersForProject = await getUsersForProject(params.id);
 
   if (!project && !tasks) {
     return (
@@ -78,7 +80,14 @@ export default async function Page({ params }: { params: { id: string } }) {
               //@ts-ignore
               .sort((a, b) => statusOrder[a.status] - statusOrder[b.status])
               .map((task) => {
-                return <TaskListing key={task.id} task={task} users={users} />;
+                return (
+                  <TaskListing
+                    key={task.id}
+                    task={task}
+                    //@ts-ignore
+                    users={usersForProject}
+                  />
+                );
               })}
           </ul>
         </Container>

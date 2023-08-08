@@ -42,7 +42,10 @@ const TaskEditModal: React.FC<TaskEditModalProps> = ({
     defaultValues: {
       name: task.name || "",
       description: task.description || "",
-      dueAt: task.dueAt || "",
+      dueAt: {
+        startDate: task.dueAt?.split("T")[0] || "",
+        endDate: task.dueAt?.split("T")[0] || "",
+      },
     },
   });
 

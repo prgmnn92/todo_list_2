@@ -38,12 +38,16 @@ const TaskListing: React.FC<TaskListingProps> = ({ task, users }) => {
       .put(`/api/task/${task.id}`, {
         status: task.status === "Complete" ? "Not Started" : "Complete",
       })
-      .then((res) => res)
+      .then((res) => {
+        if (res.status === 200) {
+          setIsLoading(false);
+          router.refresh();
+        }
+      })
       .catch((error) => console.log(error))
       .finally(() => {
         setTimeout(() => {
           setIsLoading(false);
-          router.refresh();
         }, 300);
       });
   }, [task, router]);
@@ -52,7 +56,12 @@ const TaskListing: React.FC<TaskListingProps> = ({ task, users }) => {
     setIsLoading(true);
     axios
       .delete(`/api/task/${task.id}`)
-      .then((res) => res)
+      .then((res) => {
+        if (res.status === 200) {
+          setIsLoading(false);
+          router.refresh();
+        }
+      })
       .catch((error) => console.log(error))
       .finally(() => {
         setTimeout(() => {
