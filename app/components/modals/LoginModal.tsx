@@ -2,7 +2,6 @@
 
 import React from "react";
 
-import axios from "axios";
 import { AiFillGithub } from "react-icons/ai";
 import { FcGoogle } from "react-icons/fc";
 import { useCallback, useState } from "react";
@@ -102,7 +101,7 @@ const LoginModal = () => {
       />
       <div className="mt-4 font-light text-center text-neutral-500">
         <div className="flex flex-row items-center justify-center gap-2">
-          <div>First time using Airbnb?</div>
+          <div>First time using Todolist?</div>
 
           <div
             onClick={toggle}
