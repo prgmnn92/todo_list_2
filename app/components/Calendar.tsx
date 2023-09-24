@@ -37,17 +37,23 @@ function classNames(...classes: any[]) {
 
 interface CalendarProps {
   tasks: SafeTask[];
+  isWeek?: boolean;
 }
 
-const Calendar: React.FC<CalendarProps> = ({ tasks }) => {
+const Calendar: React.FC<CalendarProps> = ({ tasks, isWeek }) => {
   const today = startOfToday();
   const [currMonth, setCurrMonth] = useState(() => format(today, "MMMM yyyy"));
   let firstDayOfMonth = parse(currMonth, "MMMM yyyy", new Date());
 
-  const daysInMonth = eachDayOfInterval({
-    start: startOfWeek(firstDayOfMonth),
-    end: endOfWeek(endOfMonth(firstDayOfMonth)),
-  });
+  const daysInMonth = isWeek
+    ? eachDayOfInterval({
+        start: startOfWeek(today),
+        end: endOfWeek(today),
+      })
+    : eachDayOfInterval({
+        start: startOfWeek(firstDayOfMonth),
+        end: endOfWeek(endOfMonth(firstDayOfMonth)),
+      });
 
   const getPrevMonth = () => {
     const firstDayOfPrevMonth = add(firstDayOfMonth, { months: -1 });
@@ -64,6 +70,7 @@ const Calendar: React.FC<CalendarProps> = ({ tasks }) => {
       const currentTasks = tasks.filter((task) =>
         isSameDay(new Date(task.dueAt || new Date()), day)
       );
+      console.log(currentTasks);
 
       return {
         date: format(day, "yyyy-MM-dd"),
@@ -81,44 +88,52 @@ const Calendar: React.FC<CalendarProps> = ({ tasks }) => {
   const selectedDay = days.find((day) => day?.isSelected) || [];
 
   return (
-    <div className="lg:flex lg:h-full lg:min-h-[90vh] lg:flex-col">
+    <div
+      className={`
+    ${isWeek ? "" : "lg:min-h-[90vh]"}
+    ${isWeek ? "" : "lg:min-h-[90vh]"}
+    lg:flex lg:h-full lg:flex-col`}
+    >
       <header className="flex items-center justify-between px-6 py-4 border-b border-gray-200 lg:flex-none">
-        <h1 className="text-base font-semibold leading-6 text-gray-900">
-          <time dateTime="2022-01">{currMonth}</time>
-        </h1>
-        <div className="flex items-center">
-          <div className="relative flex items-center bg-white rounded-md shadow-sm md:items-stretch">
-            <div
-              className="absolute inset-0 rounded-md pointer-events-none ring-1 ring-inset ring-gray-300"
-              aria-hidden="true"
-            />
-            <button
-              type="button"
-              onClick={getPrevMonth}
-              className="flex items-center justify-center py-2 pl-3 pr-4 text-gray-400 rounded-l-md hover:text-gray-500 focus:relative md:w-9 md:px-2 md:hover:bg-gray-50"
-            >
-              <span className="sr-only">Previous month</span>
-              <ChevronLeftIcon className="w-5 h-5" aria-hidden="true" />
-            </button>
-            <button
-              type="button"
-              onClick={() => setCurrMonth(() => format(today, "MMMM yyyy"))}
-              className="hidden px-3.5 text-sm font-semibold text-gray-900 hover:bg-gray-50 focus:relative md:block"
-            >
-              Today
-            </button>
-            <span className="relative w-px h-5 -mx-px bg-gray-300 md:hidden" />
-            <button
-              type="button"
-              onClick={getNextMonth}
-              className="flex items-center justify-center py-2 pl-4 pr-3 text-gray-400 rounded-r-md hover:text-gray-500 focus:relative md:w-9 md:px-2 md:hover:bg-gray-50"
-            >
-              <span className="sr-only">Next month</span>
-              <ChevronRightIcon className="w-5 h-5" aria-hidden="true" />
-            </button>
-          </div>
-          <div className="hidden md:ml-4 md:flex md:items-center">
-            {/* <Menu as="div" className="relative">
+        {/* hide navigation for monthly view */}
+        {!isWeek && (
+          <>
+            <h1 className="text-base font-semibold leading-6 text-gray-900">
+              <time dateTime="2022-01">{currMonth}</time>
+            </h1>
+            <div className="flex items-center">
+              <div className="relative flex items-center bg-white rounded-md shadow-sm md:items-stretch">
+                <div
+                  className="absolute inset-0 rounded-md pointer-events-none ring-1 ring-inset ring-gray-300"
+                  aria-hidden="true"
+                />
+                <button
+                  type="button"
+                  onClick={getPrevMonth}
+                  className="flex items-center justify-center py-2 pl-3 pr-4 text-gray-400 rounded-l-md hover:text-gray-500 focus:relative md:w-9 md:px-2 md:hover:bg-gray-50"
+                >
+                  <span className="sr-only">Previous month</span>
+                  <ChevronLeftIcon className="w-5 h-5" aria-hidden="true" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCurrMonth(() => format(today, "MMMM yyyy"))}
+                  className="hidden px-3.5 text-sm font-semibold text-gray-900 hover:bg-gray-50 focus:relative md:block"
+                >
+                  Today
+                </button>
+                <span className="relative w-px h-5 -mx-px bg-gray-300 md:hidden" />
+                <button
+                  type="button"
+                  onClick={getNextMonth}
+                  className="flex items-center justify-center py-2 pl-4 pr-3 text-gray-400 rounded-r-md hover:text-gray-500 focus:relative md:w-9 md:px-2 md:hover:bg-gray-50"
+                >
+                  <span className="sr-only">Next month</span>
+                  <ChevronRightIcon className="w-5 h-5" aria-hidden="true" />
+                </button>
+              </div>
+              <div className="hidden md:ml-4 md:flex md:items-center">
+                {/* <Menu as="div" className="relative">
               <Menu.Button
                 type="button"
                 className="flex items-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
@@ -205,130 +220,135 @@ const Calendar: React.FC<CalendarProps> = ({ tasks }) => {
                 </Menu.Items>
               </Transition>
             </Menu> */}
-            {/* <div className="w-px h-6 ml-6 bg-gray-300" />
+                {/* <div className="w-px h-6 ml-6 bg-gray-300" />
             <button
               type="button"
               className="px-3 py-2 ml-6 text-sm font-semibold text-white bg-indigo-600 rounded-md shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               Add event
             </button> */}
-          </div>
-          <Menu as="div" className="relative ml-6 md:hidden">
-            <Menu.Button className="flex items-center p-2 -mx-2 text-gray-400 border border-transparent rounded-full hover:text-gray-500">
-              <span className="sr-only">Open menu</span>
-              <EllipsisHorizontalIcon className="w-5 h-5" aria-hidden="true" />
-            </Menu.Button>
+              </div>
+              <Menu as="div" className="relative ml-6 md:hidden">
+                <Menu.Button className="flex items-center p-2 -mx-2 text-gray-400 border border-transparent rounded-full hover:text-gray-500">
+                  <span className="sr-only">Open menu</span>
+                  <EllipsisHorizontalIcon
+                    className="w-5 h-5"
+                    aria-hidden="true"
+                  />
+                </Menu.Button>
 
-            <Transition
-              as={Fragment}
-              enter="transition ease-out duration-100"
-              enterFrom="transform opacity-0 scale-95"
-              enterTo="transform opacity-100 scale-100"
-              leave="transition ease-in duration-75"
-              leaveFrom="transform opacity-100 scale-100"
-              leaveTo="transform opacity-0 scale-95"
-            >
-              <Menu.Items className="absolute right-0 z-10 mt-3 overflow-hidden origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg w-36 ring-1 ring-black ring-opacity-5 focus:outline-none">
-                <div className="py-1">
-                  <Menu.Item>
-                    {({ active }) => (
-                      <a
-                        href="#"
-                        className={classNames(
-                          active
-                            ? "bg-gray-100 text-gray-900"
-                            : "text-gray-700",
-                          "block px-4 py-2 text-sm"
+                <Transition
+                  as={Fragment}
+                  enter="transition ease-out duration-100"
+                  enterFrom="transform opacity-0 scale-95"
+                  enterTo="transform opacity-100 scale-100"
+                  leave="transition ease-in duration-75"
+                  leaveFrom="transform opacity-100 scale-100"
+                  leaveTo="transform opacity-0 scale-95"
+                >
+                  <Menu.Items className="absolute right-0 z-10 mt-3 overflow-hidden origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg w-36 ring-1 ring-black ring-opacity-5 focus:outline-none">
+                    <div className="py-1">
+                      <Menu.Item>
+                        {({ active }) => (
+                          <a
+                            href="#"
+                            className={classNames(
+                              active
+                                ? "bg-gray-100 text-gray-900"
+                                : "text-gray-700",
+                              "block px-4 py-2 text-sm"
+                            )}
+                          >
+                            Create event
+                          </a>
                         )}
-                      >
-                        Create event
-                      </a>
-                    )}
-                  </Menu.Item>
-                </div>
-                <div className="py-1">
-                  <Menu.Item>
-                    {({ active }) => (
-                      <a
-                        href="#"
-                        className={classNames(
-                          active
-                            ? "bg-gray-100 text-gray-900"
-                            : "text-gray-700",
-                          "block px-4 py-2 text-sm"
+                      </Menu.Item>
+                    </div>
+                    <div className="py-1">
+                      <Menu.Item>
+                        {({ active }) => (
+                          <a
+                            href="#"
+                            className={classNames(
+                              active
+                                ? "bg-gray-100 text-gray-900"
+                                : "text-gray-700",
+                              "block px-4 py-2 text-sm"
+                            )}
+                          >
+                            Go to today
+                          </a>
                         )}
-                      >
-                        Go to today
-                      </a>
-                    )}
-                  </Menu.Item>
-                </div>
-                <div className="py-1">
-                  <Menu.Item>
-                    {({ active }) => (
-                      <a
-                        href="#"
-                        className={classNames(
-                          active
-                            ? "bg-gray-100 text-gray-900"
-                            : "text-gray-700",
-                          "block px-4 py-2 text-sm"
+                      </Menu.Item>
+                    </div>
+                    <div className="py-1">
+                      <Menu.Item>
+                        {({ active }) => (
+                          <a
+                            href="#"
+                            className={classNames(
+                              active
+                                ? "bg-gray-100 text-gray-900"
+                                : "text-gray-700",
+                              "block px-4 py-2 text-sm"
+                            )}
+                          >
+                            Day view
+                          </a>
                         )}
-                      >
-                        Day view
-                      </a>
-                    )}
-                  </Menu.Item>
-                  <Menu.Item>
-                    {({ active }) => (
-                      <a
-                        href="#"
-                        className={classNames(
-                          active
-                            ? "bg-gray-100 text-gray-900"
-                            : "text-gray-700",
-                          "block px-4 py-2 text-sm"
+                      </Menu.Item>
+                      <Menu.Item>
+                        {({ active }) => (
+                          <a
+                            href="#"
+                            className={classNames(
+                              active
+                                ? "bg-gray-100 text-gray-900"
+                                : "text-gray-700",
+                              "block px-4 py-2 text-sm"
+                            )}
+                          >
+                            Week view
+                          </a>
                         )}
-                      >
-                        Week view
-                      </a>
-                    )}
-                  </Menu.Item>
-                  <Menu.Item>
-                    {({ active }) => (
-                      <a
-                        href="#"
-                        className={classNames(
-                          active
-                            ? "bg-gray-100 text-gray-900"
-                            : "text-gray-700",
-                          "block px-4 py-2 text-sm"
+                      </Menu.Item>
+                      <Menu.Item>
+                        {({ active }) => (
+                          <a
+                            href="#"
+                            className={classNames(
+                              active
+                                ? "bg-gray-100 text-gray-900"
+                                : "text-gray-700",
+                              "block px-4 py-2 text-sm"
+                            )}
+                          >
+                            Month view
+                          </a>
                         )}
-                      >
-                        Month view
-                      </a>
-                    )}
-                  </Menu.Item>
-                  <Menu.Item>
-                    {({ active }) => (
-                      <a
-                        href="#"
-                        className={classNames(
-                          active
-                            ? "bg-gray-100 text-gray-900"
-                            : "text-gray-700",
-                          "block px-4 py-2 text-sm"
+                      </Menu.Item>
+                      <Menu.Item>
+                        {({ active }) => (
+                          <a
+                            href="#"
+                            className={classNames(
+                              active
+                                ? "bg-gray-100 text-gray-900"
+                                : "text-gray-700",
+                              "block px-4 py-2 text-sm"
+                            )}
+                          >
+                            Year view
+                          </a>
                         )}
-                      >
-                        Year view
-                      </a>
-                    )}
-                  </Menu.Item>
-                </div>
-              </Menu.Items>
-            </Transition>
-          </Menu>
-        </div>
+                      </Menu.Item>
+                    </div>
+                  </Menu.Items>
+                </Transition>
+              </Menu>
+            </div>
+          </>
+        )}
       </header>
       <div className="shadow ring-1 ring-black ring-opacity-5 lg:flex lg:flex-auto lg:flex-col">
         <div className="grid grid-cols-7 gap-px text-xs font-semibold leading-6 text-center text-gray-700 bg-gray-200 border-b border-gray-300 lg:flex-none">
@@ -355,13 +375,17 @@ const Calendar: React.FC<CalendarProps> = ({ tasks }) => {
           </div>
         </div>
         <div className="flex text-xs leading-6 text-gray-700 bg-gray-200 lg:flex-auto">
-          <div className="hidden w-full lg:grid lg:grid-cols-7 lg:grid-rows-6 lg:gap-px">
+          <div
+            className={`
+          ${isWeek ? "lg:grid-rows-1" : "lg:grid-rows-6"}
+          hidden w-full lg:grid lg:grid-cols-7  lg:gap-px`}
+          >
             {days.map((day) => (
               <div
                 key={day.date}
                 className={classNames(
                   day.isCurrentMonth ? "bg-white" : "bg-gray-50 text-gray-500",
-                  "relative px-3 py-2"
+                  "relative px-3 py-2 min-h-[100px]"
                 )}
               >
                 <time
@@ -388,7 +412,7 @@ const Calendar: React.FC<CalendarProps> = ({ tasks }) => {
                           <time
                             //@ts-ignore
                             dateTime={event.dueAt}
-                            className="flex-none hidden ml-3 text-gray-500 group-hover:text-indigo-600 xl:block"
+                            className="flex-none hidden ml-3 text-gray-500 group-hover:text-indigo-600"
                           >
                             {event.dueAt}
                           </time>
@@ -405,7 +429,12 @@ const Calendar: React.FC<CalendarProps> = ({ tasks }) => {
               </div>
             ))}
           </div>
-          <div className="grid w-full grid-cols-7 grid-rows-6 gap-px isolate lg:hidden">
+          <div
+            className={`
+          ${isWeek ? "lg:grid-rows-1" : "lg:grid-rows-6"}
+          grid w-full grid-cols-7 
+          gap-px isolate lg:hidden`}
+          >
             {days.map((day) => (
               <button
                 key={day.date}
