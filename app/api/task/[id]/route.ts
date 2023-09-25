@@ -19,7 +19,6 @@ export async function PUT(request: Request, { params }: { params: IParams }) {
   const body = await request.json();
   const { name, description, status, dueAt, userId, isRemoveUser } = body;
 
-  console.log(body);
   let userIds = [...(currentTask.userIds || [])];
 
   if (isRemoveUser) {

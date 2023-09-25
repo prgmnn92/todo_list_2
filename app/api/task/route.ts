@@ -19,6 +19,7 @@ export async function POST(request: Request) {
       description,
       projectId,
       dueAt: new Date(dueAt.endDate) || null,
+      userIds: [currentUser.id],
     },
   });
 

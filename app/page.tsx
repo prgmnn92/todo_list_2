@@ -7,7 +7,7 @@ import TaskOverview from "./components/task/TaskOverview";
 
 export default async function Home() {
   const currentUser = await getCurrentUser();
-  const tasks = await getTasksForCurrentUser();
+  const tasks = currentUser ? await getTasksForCurrentUser() : [];
 
   if (!currentUser) {
     return <LoginView />;
@@ -15,9 +15,19 @@ export default async function Home() {
 
   const uncompletedTasks = tasks.filter((task) => task.status !== "Complete");
 
+  const getFirstName = (name: String) => {
+    let splittedName = name?.split(" ");
+    if (!splittedName) return name;
+    if (splittedName?.length >= 2) return splittedName[0];
+    return name;
+  };
+
   return (
     <main className="py-10 lg:pl-72">
       <Container>
+        <h1 className="pb-4 text-2xl lg:text-4xl">
+          Welcome {getFirstName(currentUser.name || "")}
+        </h1>
         <h2 className="pt-4 text-2xl">Your week</h2>
         <Calendar tasks={tasks} isWeek />
         <h2 className="py-4 text-2xl">Task overview</h2>

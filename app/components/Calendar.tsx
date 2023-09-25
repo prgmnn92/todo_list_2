@@ -70,7 +70,6 @@ const Calendar: React.FC<CalendarProps> = ({ tasks, isWeek }) => {
       const currentTasks = tasks.filter((task) =>
         isSameDay(new Date(task.dueAt || new Date()), day)
       );
-      console.log(currentTasks);
 
       return {
         date: format(day, "yyyy-MM-dd"),
@@ -406,7 +405,15 @@ const Calendar: React.FC<CalendarProps> = ({ tasks, isWeek }) => {
                           href={`/projects/${event.projectId}`}
                           className="flex group"
                         >
-                          <p className="flex-auto font-medium text-gray-900 truncate group-hover:text-indigo-600">
+                          <p
+                            className={`
+                          ${
+                            event.status === "Complete"
+                              ? "text-green-600"
+                              : "text-gray-900"
+                          }
+                          flex-auto font-medium  truncate group-hover:text-indigo-600`}
+                          >
                             {event.name}
                           </p>
                           <time
