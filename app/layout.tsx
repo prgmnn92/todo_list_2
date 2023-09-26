@@ -13,7 +13,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Todo",
-  description: "Live collaboration todolist",
+  description: "Collaboration todolist",
 };
 
 export default async function RootLayout({
